@@ -1,12 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { ThemeProvider } from "styled-components";
+import { Helmet } from 'react-helmet';
+// import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import GlobalStyle from "./theme/globalStyles";
+import theme from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <ThemeProvider theme={theme} >
+          <Helmet>
+              <title>Phrasebook | A place where you can find motivation for yourself</title>
+              <meta
+                  name="description"
+                  content="The social network for people that want to find a bit more of motivation in their lives. Connect yourself and inspire others! Made with ❤️ by @bitinbyte"
+              />
+          {/*    Missing link canocical https://github.com/fidalgodev/movie-library-react/blob/master/src/index.js  */}
+          </Helmet>
+          <GlobalStyle />
+          <App />
+      </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
