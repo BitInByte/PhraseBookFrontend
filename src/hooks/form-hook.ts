@@ -2,78 +2,59 @@ import React, { useReducer, useCallback } from "react";
 
 enum Actions {
   "CHANGE_VALUE",
+  "CHANGE_FORM_VALIDATION",
+  "CHANGE_TOUCHED_ELEMENT",
 }
 
-const formStateReducer: React.Reducer<IState<any>, ActionsType> = <T>(
-  state: IState<T>,
-  action: ActionsType
-): IState<T> => {
+// const formStateReducer: React.Reducer<IState<any>, ActionsType> = <T>(
+// It's a type that we don't know the elements inside of it but we know that will always be an object
+// So we extend the type we're receiving to a record to be able to use a string to find the object property
+const createFormReducer = <T extends Record<string, any>>(): React.Reducer<
+  IState<T>,
+  ActionsType
+> => (state, action): IState<T> => {
   switch (action.type) {
     case Actions.CHANGE_VALUE:
-      // const element = action.payload!.inputName;
-      // const val = "firstName";
-      console.log(action.payload!.value);
-      // console.log("STATE");
-      // const val = action.payload!.inputName;
-      // console.log(val);
-      // console.log(action.payload!.inputName);
-      // console.log("FIRST NAME");
-
-      // console.log(state.inputs[val]);
-      // console.log(state.inputs[action.payload!.inputName]);
-
-      // console.log(state.inputs[element].value);
-
-      // console.log("Index");
-      // let element;
-      // for (const index in state.inputs) {
-      //   console.log(index === action.payload?.inputName);
-      //   console.log(index.value);
-      // if (index === action.payload!.inputName) element = index;
-      // }
-
-      // if (Array.isArray(state.inputs)) {
-      //   //  Get the index of the element
-      //   // let inputIndex;
-      //   // for (const inputId in state.inputs) {
-      //   //   if (inputId === action.payload!.inputName) {
-      //   //   }
-      //   // }
-      //   const values = [...state.inputs];
-      //
-      //   values.map(e => {
-      //     if (e.id === action.payload!.inputName) {
-      //       e.value = action.payload!.value;
-      //     }
-      //     return e;
-      //   });
-      //
-      //   return {
-      //     ...state,
-      //     inputs: values,
-      //     // inputs: {
-      //     //   ...state.inputs,
-      //     //   [action.payload!.inputName!]: {
-      //     //     ...[action.payload!.inputName],
-      //     //     value: action.payload!.value,
-      //     //   },
-      //     // },
-      //   };
-      // } else {
-      //   return {
-      //     ...state,
-      //     inputs: {
-      //       ...state.inputs,
-      //       value: action.payload!.value,
-      //     },
-      //   };
+      //  Object destructuring for type safety
+      const { value, validation, inputName } = action.payload as Payload;
       return {
         ...state,
         inputs: {
           ...state.inputs,
-          [action.payload!.inputName]: {
-            ...[action.payload!.inputName],
-            value: action.payload!.value,
+          // [action.payload!.inputName]: {
+          [inputName]: {
+            // ...[action.payload!.inputName],
+            ...state.inputs[inputName],
+
+            // value: action.payload!.value as Payload,
+            value: value,
+
+            // isValid: action.payload!.validation,
+            isValid: validation,
+          },
+        },
+      };
+    case Actions.CHANGE_FORM_VALIDATION:
+      //  Object destructuring for type safety
+      const { validator } = action.payload as Payload2;
+
+      return {
+        ...state,
+
+        // isFormValid: action.payload!.validator,
+        isFormValid: validator,
+      };
+    case Actions.CHANGE_TOUCHED_ELEMENT:
+      const { inputNameId } = action.payload as Payload3;
+      console.log("Input name id");
+      console.log(inputNameId);
+      return {
+        ...state,
+        inputs: {
+          ...state.inputs,
+          [inputNameId]: {
+            ...state.inputs[inputNameId],
+            isTouched: true,
           },
         },
       };
@@ -82,64 +63,40 @@ const formStateReducer: React.Reducer<IState<any>, ActionsType> = <T>(
   }
 };
 
-type InputElement = {
-  id: string;
-  value: string;
-  isValid: boolean;
+// type InputElement = {
+//   id: string;
+//   value: string;
+//   isValid: boolean;
+// };
+
+type Payload3 = {
+  inputNameId: string;
 };
 
-type Payload = {
-  value: string;
-  inputName: string;
+type Payload2 = {
+  validator: boolean;
 };
 
-type ActionsType = {
-  payload?: Payload;
+type Payload =
+  // | { validator: boolean }
+  {
+    value: string;
+    inputName: string;
+    validation: boolean;
+  };
+
+interface ActionsType {
+  payload?: Payload | Payload2 | Payload3;
   type: Actions;
-};
-
-export enum stateTypes {
-  "firstName",
-  "lastName",
-  "email",
-  "password",
-  "repeatPassword",
 }
 
-interface ILoginState {
-  email: {
-    value: string;
-    isValid: boolean;
-  };
-  password: {
-    value: string;
-    isValid: boolean;
-  };
-}
-
-interface IRegisterState extends ILoginState {
-  firstName: {
-    value: string;
-    isValid: boolean;
-  };
-  lastName: {
-    value: string;
-    isValid: boolean;
-  };
-  // email: {
-  //   value: string;
-  //   isValid: boolean;
-  // };
-  // password: {
-  //   value: string;
-  //   isValid: boolean;
-  // };
-  repeatPassword: {
-    value: string;
-    isValid: boolean;
-  };
-}
-
+// export enum stateTypes {
+//   "firstName",
+//   "lastName",
+//   "email",
+//   "password",
+//   "repeatPassword",
+// }
 export interface IState<T> {
   // inputs: IRegisterState | ILoginState;
   inputs: T;
@@ -148,20 +105,43 @@ export interface IState<T> {
 
 // export const useForm = (initialInputs: IRegisterState) => {
 export const useForm = <T>(initialInputs: T) => {
+  const formReducer = createFormReducer<T>();
   //    Create a reducer
-  const [formState, dispatch] = useReducer(formStateReducer, {
+  const [formState, dispatch] = useReducer(formReducer, {
     inputs: initialInputs,
     isFormValid: false,
   });
 
-  const inputValueHandler = useCallback((id: string, value: string) => {
-    // console.log("Value");
-    // console.log(value);
+  const inputValueHandler = useCallback(
+    (id: string, value: string, validation: boolean) => {
+      // console.log("Value");
+      // console.log(value);
+      dispatch({
+        type: Actions.CHANGE_VALUE,
+        payload: { value, inputName: id, validation },
+      });
+    },
+    []
+  );
+
+  const formValidationHandler = useCallback((validation: boolean) => {
     dispatch({
-      type: Actions.CHANGE_VALUE,
-      payload: { value, inputName: id },
+      type: Actions.CHANGE_FORM_VALIDATION,
+      payload: { validator: validation },
     });
   }, []);
 
-  return { formState, inputValueHandler };
+  const inputTouchedHandler = useCallback((id: string) => {
+    dispatch({
+      type: Actions.CHANGE_TOUCHED_ELEMENT,
+      payload: { inputNameId: id },
+    });
+  }, []);
+
+  return {
+    formState,
+    inputValueHandler,
+    formValidationHandler,
+    inputTouchedHandler,
+  };
 };

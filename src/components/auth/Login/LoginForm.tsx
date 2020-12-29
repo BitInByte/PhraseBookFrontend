@@ -1,20 +1,24 @@
 // Import libraries
 import React, { useEffect } from "react";
 import styled from "styled-components";
+import Input from "../../ui/Form/Input";
+import H2 from "../../ui/Typography/H2";
+import Button from "../../ui/Button/Button";
 import PropTypes from "prop-types";
 
 import { useForm } from "../../../hooks/form-hook";
 import { isEmail, isLength } from "../../../utils/validators";
 
 // Import components
-import Input from "../../ui/Form/Input";
-import H2 from "../../ui/Typography/H2";
-import Button from "../../ui/Button/Button";
 
 // Styles
 const Form = styled.form`
-  width: 100%;
+  //width: 100%;
   //margin: 1.5rem 0;
+  //display: flex;
+  //flex-direction: column;
+  //justify-content: center;
+  //align-items: center;
 `;
 
 // Interface
@@ -28,9 +32,7 @@ type stateElement = {
   isTouched: boolean;
 };
 
-interface IRegisterState {
-  firstName: stateElement;
-  lastName: stateElement;
+interface ILoginState {
   email: stateElement;
   password: stateElement;
   repeatPassword: stateElement;
@@ -38,23 +40,13 @@ interface IRegisterState {
 }
 
 // Component
-const RegisterForm: React.FC<IProps> = ({ onButtonPush }) => {
+const LoginForm: React.FC<IProps> = ({ onButtonPush }) => {
   const {
     formState,
     inputValueHandler,
     formValidationHandler,
     inputTouchedHandler,
-  } = useForm<IRegisterState>({
-    firstName: {
-      value: "",
-      isValid: false,
-      isTouched: false,
-    },
-    lastName: {
-      value: "",
-      isValid: false,
-      isTouched: false,
-    },
+  } = useForm<ILoginState>({
     email: {
       value: "",
       isValid: false,
@@ -71,9 +63,6 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush }) => {
       isTouched: false,
     },
   });
-
-  console.log("FormState");
-  console.log(formState);
 
   const isFormValidHandler = () => {
     let formValidation = true;
@@ -113,28 +102,6 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush }) => {
       validator = isLength(1, value);
     }
     await inputValueHandler(id, event.target.value, validator);
-
-    //  Validate the form
-    // let formValidation = true;
-    // console.log("Validation");
-    // for (const elem in formState.inputs) {
-    //   console.log(formState.inputs[elem].isValid);
-    //   formValidation = formValidation && formState.inputs[elem].isValid;
-    //   // console.log(state.inputs[elem].isValid);
-    // }
-    //
-    // if (
-    //   formState.inputs.password.value !== formState.inputs.repeatPassword.value
-    // ) {
-    //   formValidation = false;
-    // }
-    // formValidationHandler(formValidation);
-    console.log("FORM VALIDATION");
-    // console.log(formValidation);
-    console.log(formState.inputs.password.value);
-    console.log(formState.inputs.repeatPassword.value);
-    console.log(formState);
-    // await isFormValidHandler();
   };
 
   const touchedHandler = (id: string) => {
@@ -148,32 +115,8 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush }) => {
 
   return (
     <>
-      <H2>Registration</H2>
+      <H2>Login</H2>
       <Form onSubmit={submitHandler}>
-        <Input
-          label="First Name"
-          type="text"
-          element="input"
-          errorMessage="You should provide you're last name!"
-          isValid={formState.inputs.firstName.isValid}
-          id="firstName"
-          value={formState.inputs.firstName.value}
-          onChangeHandler={changeHandler}
-          onBlurHandler={touchedHandler}
-          isTouched={formState.inputs.firstName.isTouched}
-        />
-        <Input
-          label="Last Name"
-          type="text"
-          element="input"
-          errorMessage="You should provide you're first name!"
-          isValid={formState.inputs.lastName.isValid}
-          id="lastName"
-          value={formState.inputs.lastName.value}
-          onChangeHandler={changeHandler}
-          onBlurHandler={touchedHandler}
-          isTouched={formState.inputs.lastName.isTouched}
-        />
         <Input
           label="Email"
           type="text"
@@ -216,13 +159,15 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush }) => {
           isDisabled={!formState.isFormValid}
           type="submit"
         />
-        <Button text="Login" buttonPushHandler={onButtonPush} />
+        <Button text="Register" buttonPushHandler={onButtonPush} />
       </Form>
     </>
   );
 };
 
 // Prop types declaration
-RegisterForm.propTypes = {};
+LoginForm.propTypes = {
+  onButtonPush: PropTypes.func.isRequired,
+};
 
-export default RegisterForm;
+export default LoginForm;

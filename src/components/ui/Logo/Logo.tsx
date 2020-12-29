@@ -1,10 +1,11 @@
 // Import libraries
 import React from "react";
-import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 // Styles
-const LogoWord = styled.a`
+const LogoWord = styled.p`
   //@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
   //@font-face {
   //  font-family: "Fredoka One";
@@ -36,7 +37,11 @@ const LogoWord = styled.a`
 interface IProps {}
 
 // Component
-const Logo: React.FC<IProps> = () => <LogoWord>Phrasebook</LogoWord>;
+const Logo: React.FC<IProps> = () => (
+  <Link to="/">
+    <LogoWord>Phrasebook</LogoWord>
+  </Link>
+);
 
 // Prop types declaration
 Logo.propTypes = {};

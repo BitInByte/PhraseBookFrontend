@@ -25,7 +25,7 @@ const H1: React.FC<IProps> = ({ children }) => {
 
 // Prop types declaration
 H1.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.string.isRequired,
 };
 
 export default H1;

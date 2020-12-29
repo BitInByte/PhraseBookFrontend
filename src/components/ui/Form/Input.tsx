@@ -4,24 +4,31 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 // Import components
+import { isEmail, isLength } from "../../../utils/validators";
 
 // Styles
 
-interface IStyled {
+interface IStyledLabel {
   value: string;
 }
 
+interface IStyledP {
+  isTouched: boolean;
+  isValid: boolean;
+}
+
 const InputWrapper = styled.div`
-  width: 75%;
+  width: 100%;
   //display: flex;
   //flex-direction: column;
   //margin: 0 1.5rem;
-  margin: 1rem 0;
+  //margin: 1rem 0;
   position: relative;
   padding: 1.1rem 0;
+  margin: 1rem auto;
 `;
 
-const LabelStyles = styled.label<IStyled>`
+const LabelStyles = styled.label<IStyledLabel>`
   position: absolute;
   top: 0;
   left: 0;
@@ -70,26 +77,31 @@ const InputStyles = styled.input`
   }
 `;
 
-const SpanStyles = styled.p`
+const SpanStyles = styled.p<IStyledP>`
   text-align: center;
   color: ${props => props.theme.colors.red};
   margin-top: 0.5rem;
-  opacity: 0;
-  display: none;
+  opacity: ${props => (props.isTouched && !props.isValid ? "1" : "0")};
+  display: ${props => (props.isTouched && !props.isValid ? "block" : "none")};
   padding: 0.5rem 0.05rem;
 `;
 
 // Interface
-interface IProps extends IStyled {
+interface IProps extends IStyledLabel, IStyledP {
   label: string;
   type: string;
   // name: string;
   errorMessage: string;
-  isValid: boolean;
+  // isValid: boolean;
   // value: string;
   element: string;
   id: string;
-  onChangeHandler: (id: string, value: string) => void;
+  // onChangeHandler: (id: string, value: string, validator: boolean) => void;
+  onChangeHandler: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: string
+  ) => void;
+  onBlurHandler: (id: string) => void;
 }
 
 // Component
@@ -103,12 +115,33 @@ const Input: React.FC<IProps> = props => {
     element,
     onChangeHandler,
     id,
+    onBlurHandler,
+    isTouched,
   } = props;
 
   console.log(id);
+  console.log(isTouched);
+  console.log(isValid);
+
+  // const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = event.target.value;
+  //   let validator;
+  //   if (id === "email") {
+  //     validator = isEmail(value);
+  //   } else if (id === "password" || id === "repeatPassword") {
+  //     validator = isLength(8, value);
+  //   } else {
+  //     validator = isLength(1, value);
+  //   }
+  //   onChangeHandler(id, event.target.value, validator);
+  // };
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeHandler(id, event.target.value);
+    onChangeHandler(event, id);
+  };
+  //
+  const blurHandler = () => {
+    onBlurHandler(id);
   };
 
   return (
@@ -119,10 +152,13 @@ const Input: React.FC<IProps> = props => {
           value={value}
           // id={id}
           onChange={changeHandler}
+          onBlur={blurHandler}
         />
       )}
       <LabelStyles value={value}>{label}</LabelStyles>
-      <SpanStyles>{errorMessage}</SpanStyles>
+      <SpanStyles isValid={isValid} isTouched={isTouched}>
+        {errorMessage}
+      </SpanStyles>
     </InputWrapper>
   );
 };

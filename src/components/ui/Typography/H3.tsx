@@ -21,7 +21,7 @@ const H3: React.FC<IProps> = ({ children }) => <H3Styles>{children}</H3Styles>;
 
 // Prop types declaration
 H3.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.string.isRequired,
 };
 
 export default H3;

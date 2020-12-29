@@ -36,23 +36,51 @@ const ButtonStyles = styled.button<IStyled>`
         color: ${props => props.theme.colors.white};
       `}
   }
+
+  &:disabled {
+    background-color: ${props => props.theme.colors.grey};
+    cursor: not-allowed;
+  }
 `;
 
 // Props Interface
 interface IProps extends IStyled {
   // filled?: boolean;
   text: string;
+  isDisabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  // type?: string;
+  buttonPushHandler?: () => void;
 }
 
 // Component
-const Button: React.FC<IProps> = ({ text, isFilled }) => (
-  <ButtonStyles isFilled={isFilled}>{text}</ButtonStyles>
+const Button: React.FC<IProps> = ({
+  text,
+  isFilled,
+  isDisabled,
+  type,
+  buttonPushHandler,
+}) => (
+  <ButtonStyles
+    isFilled={isFilled}
+    disabled={isDisabled}
+    type={type}
+    onClick={buttonPushHandler}
+  >
+    {text}
+  </ButtonStyles>
 );
 
 // Prop types declaration
 Button.propTypes = {
   isFilled: PropTypes.bool,
   text: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(["button", "submit", "reset"]),
+  buttonPushHandler: PropTypes.func,
+};
+
+Button.defaultProps = {
+  type: "button",
 };
 
 export default Button;

@@ -1,7 +1,8 @@
 // Import libraries
 import React from "react";
-import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 // Import components
 import H1 from "../components/ui/Typography/H1";
@@ -37,9 +38,11 @@ const LeftSideWrapper = styled.div`
 `;
 
 const RightSideWrapper = styled.div`
-  width: 100%;
+  //width: 100%;
+  width: 75%;
   height: 100%;
   //display: flex;
+  //flex-direction: column;
   //align-items: center;
   //justify-content: center;
 `;
@@ -49,6 +52,11 @@ interface IProps {}
 
 // Component
 const HomePage: React.FC<IProps> = () => {
+  let history = useHistory();
+  const onLoginButtonPush = () => {
+    history.push("/auth");
+  };
+
   return (
     <HomePageWrapper>
       <ContentWrapper>
@@ -59,7 +67,7 @@ const HomePage: React.FC<IProps> = () => {
       </ContentWrapper>
       <ContentWrapper>
         <RightSideWrapper>
-          <RegisterForm />
+          <RegisterForm onButtonPush={onLoginButtonPush} />
         </RightSideWrapper>
       </ContentWrapper>
     </HomePageWrapper>
