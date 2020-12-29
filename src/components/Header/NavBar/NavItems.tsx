@@ -7,7 +7,11 @@ import styled from "styled-components";
 import NavItem from "./NavItem";
 
 // Styles
-const Ul = styled.ul<IProps>`
+interface IStyled {
+  isSideDrawer?: boolean;
+}
+
+const Ul = styled.ul<IStyled>`
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -16,8 +20,8 @@ const Ul = styled.ul<IProps>`
 `;
 
 // Interface
-interface IProps {
-  isSideDrawer?: boolean;
+interface IProps extends IStyled {
+  // isSideDrawer?: boolean;
 }
 
 // Component
@@ -27,10 +31,12 @@ const NavItems: React.FC<IProps> = props => {
   const navItems = (
     <>
       <NavItem title="Authenticate" />
+      {/*<NavItem title="Authenticate" />*/}
+      {/*<NavItem title="Authenticate" />*/}
     </>
   );
 
-  return <Ul>{navItems}</Ul>;
+  return <Ul isSideDrawer={props.isSideDrawer}>{navItems}</Ul>;
 };
 
 // Prop types declaration

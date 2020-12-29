@@ -10,6 +10,7 @@ const H1Styles = styled.h1`
   font-size: ${props => props.theme.fontSize.h1};
   color: inherit;
   text-align: left;
+  //line-height: 1.5;
   //display: block;
   //flex: 1;
 `;
@@ -23,6 +24,8 @@ const H1: React.FC<IProps> = ({ children }) => {
 };
 
 // Prop types declaration
-H1.propTypes = {};
+H1.propTypes = {
+  children: PropTypes.element.isRequired,
+};
 
 export default H1;

@@ -33,6 +33,8 @@ const Layout: React.FC<IProps> = props => {
   );
 };
 
-Layout.propTypes = {};
+Layout.propTypes = {
+  children: PropTypes.element.isRequired,
+};
 
 export default Layout;

@@ -8,6 +8,7 @@ declare module "styled-components" {
 
     colors: {
       pink: string;
+      lightPink: string;
       blue: string;
       yellow: string;
       darkYellow: string;
@@ -27,5 +28,6 @@ declare module "styled-components" {
     mediaQueries: {
       medium: string;
     };
+    animationTime: string;
   }
 }

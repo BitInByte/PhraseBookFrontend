@@ -6,6 +6,7 @@ import styled from "styled-components";
 // Import components
 import H1 from "../components/ui/Typography/H1";
 import H3 from "../components/ui/Typography/H3";
+import RegisterForm from "../components/auth/Register/RegisterForm";
 
 // Styles
 const HomePageWrapper = styled.div`
@@ -57,7 +58,9 @@ const HomePage: React.FC<IProps> = () => {
         </LeftSideWrapper>
       </ContentWrapper>
       <ContentWrapper>
-        <RightSideWrapper>Registration Page</RightSideWrapper>
+        <RightSideWrapper>
+          <RegisterForm />
+        </RightSideWrapper>
       </ContentWrapper>
     </HomePageWrapper>
   );

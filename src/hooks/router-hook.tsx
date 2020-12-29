@@ -30,6 +30,8 @@ const useRouters = () => {
   routesObj = notAuthRoutes;
   const changeRoutes = () => {
     routesObj = isAuthenticated ? authRoutes : notAuthRoutes;
+    console.log("Changing routes:");
+    console.log(routesObj);
   };
 
   useEffect(() => {
