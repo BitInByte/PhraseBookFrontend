@@ -1,6 +1,10 @@
 // Import libraries
 import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+// import { Dispatch } from "redux";
+
+// Import components
 import Input from "../../ui/Form/Input";
 import H2 from "../../ui/Typography/H2";
 import Button from "../../ui/Button/Button";
@@ -8,8 +12,7 @@ import PropTypes from "prop-types";
 
 import { useForm } from "../../../hooks/form-hook";
 import { isEmail, isLength } from "../../../utils/validators";
-
-// Import components
+import { login } from "../../../store/actions/authAction";
 
 // Styles
 const Form = styled.form`
@@ -41,6 +44,8 @@ interface ILoginState {
 
 // Component
 const LoginForm: React.FC<IProps> = ({ onButtonPush }) => {
+  const dispatch = useDispatch();
+
   const {
     formState,
     inputValueHandler,
@@ -111,6 +116,12 @@ const LoginForm: React.FC<IProps> = ({ onButtonPush }) => {
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(formState.inputs);
+    dispatch(
+      login({
+        email: formState.inputs.email.value,
+        password: formState.inputs.password.value,
+      })
+    );
   };
 
   return (
@@ -154,7 +165,7 @@ const LoginForm: React.FC<IProps> = ({ onButtonPush }) => {
           isTouched={formState.inputs.repeatPassword.isTouched}
         />
         <Button
-          text="Register"
+          text="Login"
           isFilled
           isDisabled={!formState.isFormValid}
           type="submit"

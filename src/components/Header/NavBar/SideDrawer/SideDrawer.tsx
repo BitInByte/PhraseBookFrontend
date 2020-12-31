@@ -15,6 +15,7 @@ const SideDrawerWrapper = styled.aside`
   top: 0;
   z-index: 100;
   height: 100vh;
+  width: 30rem;
   background: ${props => props.theme.colors.pink};
   color: ${props => props.theme.colors.yellow};
 
@@ -51,6 +52,7 @@ const Nav = styled.nav`
 // Interface
 interface IProps {
   showDrawer: boolean;
+  isAuth: boolean;
 }
 
 // Component
@@ -67,7 +69,7 @@ const SideDrawer: React.FC<IProps> = props => {
     >
       <SideDrawerWrapper>
         <Nav>
-          <NavItems isSideDrawer />
+          <NavItems isSideDrawer isAuth={props.isAuth} />
         </Nav>
       </SideDrawerWrapper>
     </CSSTransition>
@@ -85,6 +87,7 @@ const SideDrawer: React.FC<IProps> = props => {
 // Prop types declaration
 SideDrawer.propTypes = {
   showDrawer: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
 };
 
 export default SideDrawer;

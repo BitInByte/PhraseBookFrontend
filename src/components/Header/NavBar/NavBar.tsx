@@ -23,13 +23,16 @@ const Nav = styled.nav`
   //flex-grow: 1;
   font-size: 2rem;
   margin-right: 1rem;
+  margin-left: auto;
 `;
 
 // Interface
-interface IProps {}
+interface IProps {
+  isAuth: string | null;
+}
 
 // Component
-const NavBar: React.FC<IProps> = () => {
+const NavBar: React.FC<IProps> = ({ isAuth }) => {
   const [drawOpen, setDrawOpen] = useState(false);
 
   const toggleDrawHandler = () => {
@@ -40,9 +43,10 @@ const NavBar: React.FC<IProps> = () => {
   return (
     <Nav>
       {drawOpen && <BackDrop toggleDrawer={toggleDrawHandler} />}
-      <SideDrawer showDrawer={drawOpen} />
+      <SideDrawer isAuth={!!isAuth} showDrawer={drawOpen} />
       <NavWrapper>
-        <NavItems />
+        {/* Same than isAuth ? true : false  */}
+        <NavItems isAuth={!!isAuth} />
       </NavWrapper>
       <BurgerButton toggleDrawer={toggleDrawHandler} />
     </Nav>
@@ -50,6 +54,8 @@ const NavBar: React.FC<IProps> = () => {
 };
 
 // Prop types declaration
-NavBar.propTypes = {};
+NavBar.propTypes = {
+  isAuth: PropTypes.string,
+};
 
 export default NavBar;

@@ -6,16 +6,17 @@ import PropTypes from "prop-types";
 // Import components
 import LoginForm from "../components/auth/Login/LoginForm";
 import RegisterForm from "../components/auth/Register/RegisterForm";
+import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 
 // Styles
-const AuthWrapper = styled.div`
-  width: 100rem;
-  min-height: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 6rem;
-  //align-items: center;
-`;
+// const AuthWrapper = styled.div`
+//   width: 100rem;
+//   min-height: 100%;
+//   display: flex;
+//   justify-content: center;
+//   padding: 6rem;
+//   //align-items: center;
+// `;
 
 const FormWrapper = styled.div`
   width: 50%;
@@ -37,7 +38,7 @@ const AuthPage: React.FC<IProps> = () => {
   };
 
   return (
-    <AuthWrapper>
+    <SectionWrapper>
       <FormWrapper>
         {isRegisterMode ? (
           <RegisterForm onButtonPush={toggleRegistrationModeHandler} />
@@ -45,7 +46,7 @@ const AuthPage: React.FC<IProps> = () => {
           <LoginForm onButtonPush={toggleRegistrationModeHandler} />
         )}
       </FormWrapper>
-    </AuthWrapper>
+    </SectionWrapper>
   );
 };
 

@@ -6,13 +6,19 @@ enum Actions {
   "CHANGE_TOUCHED_ELEMENT",
 }
 
+type stateElement = {
+  value: string;
+  isValid: boolean;
+  isTouched: boolean;
+};
+
 // const formStateReducer: React.Reducer<IState<any>, ActionsType> = <T>(
 // It's a type that we don't know the elements inside of it but we know that will always be an object
 // So we extend the type we're receiving to a record to be able to use a string to find the object property
-const createFormReducer = <T extends Record<string, any>>(): React.Reducer<
-  IState<T>,
-  ActionsType
-> => (state, action): IState<T> => {
+const createFormReducer = <
+  // T extends Record<string, stateElement>
+  T extends Record<string, stateElement>
+>(): React.Reducer<IState<T>, ActionsType> => (state, action): IState<T> => {
   switch (action.type) {
     case Actions.CHANGE_VALUE:
       //  Object destructuring for type safety
@@ -104,7 +110,9 @@ export interface IState<T> {
 }
 
 // export const useForm = (initialInputs: IRegisterState) => {
-export const useForm = <T>(initialInputs: T) => {
+export const useForm = <T extends Record<string, stateElement>>(
+  initialInputs: T
+) => {
   const formReducer = createFormReducer<T>();
   //    Create a reducer
   const [formState, dispatch] = useReducer(formReducer, {

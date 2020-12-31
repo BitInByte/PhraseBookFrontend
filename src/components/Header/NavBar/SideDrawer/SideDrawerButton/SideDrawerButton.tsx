@@ -11,6 +11,7 @@ const BurgerLine = styled.div`
   height: 0.4rem;
   background: ${props => props.theme.colors.yellow};
   transition: all 0.2s ease-in;
+  margin-left: auto;
 `;
 
 const BurgerButton = styled.button`

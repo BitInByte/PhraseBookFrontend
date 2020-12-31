@@ -1,6 +1,7 @@
 // Import libraries
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 // Import components
 import Logo from "../ui/Logo/Logo";
@@ -23,11 +24,13 @@ interface IProps {}
 
 // Component
 const Header: React.FC<IProps> = () => {
+  const auth: IAuthState = useSelector((state: IStore) => state.auth);
+
   return (
     <HeaderWrapper>
       <Logo />
-      <SearchBar />
-      <NavBar />
+      {auth.token && <SearchBar />}
+      <NavBar isAuth={auth.token} />
     </HeaderWrapper>
   );
 };

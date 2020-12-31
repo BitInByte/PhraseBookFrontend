@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import H1 from "../components/ui/Typography/H1";
 import H3 from "../components/ui/Typography/H3";
 import RegisterForm from "../components/auth/Register/RegisterForm";
+// import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 
 // Styles
 const HomePageWrapper = styled.div`
