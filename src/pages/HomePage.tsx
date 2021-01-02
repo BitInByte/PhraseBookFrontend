@@ -2,12 +2,14 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 // Import components
 import H1 from "../components/ui/Typography/H1";
 import H3 from "../components/ui/Typography/H3";
 import RegisterForm from "../components/auth/Register/RegisterForm";
+import MessageModal from "../components/ui/MessageModal/MessageModal";
 // import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 
 // Styles
@@ -54,24 +56,31 @@ interface IProps {}
 // Component
 const HomePage: React.FC<IProps> = () => {
   let history = useHistory();
+  const auth: IAuthState = useSelector((state: IStore) => state.auth);
   const onLoginButtonPush = () => {
     history.push("/auth");
   };
 
   return (
-    <HomePageWrapper>
-      <ContentWrapper>
-        <LeftSideWrapper>
-          <H1>Inspiring people on taking the best of their lives!</H1>
-          <H3>Start inspiring other people and register now</H3>
-        </LeftSideWrapper>
-      </ContentWrapper>
-      <ContentWrapper>
-        <RightSideWrapper>
-          <RegisterForm onButtonPush={onLoginButtonPush} />
-        </RightSideWrapper>
-      </ContentWrapper>
-    </HomePageWrapper>
+    <>
+      <MessageModal isError message={auth.error} />
+      <HomePageWrapper>
+        <ContentWrapper>
+          <LeftSideWrapper>
+            <H1>Inspiring people on taking the best of their lives!</H1>
+            <H3>Start inspiring other people and register now</H3>
+          </LeftSideWrapper>
+        </ContentWrapper>
+        <ContentWrapper>
+          <RightSideWrapper>
+            <RegisterForm
+              onButtonPush={onLoginButtonPush}
+              isLoading={auth.loading}
+            />
+          </RightSideWrapper>
+        </ContentWrapper>
+      </HomePageWrapper>
+    </>
   );
 };
 

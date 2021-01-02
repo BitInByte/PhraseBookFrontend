@@ -3,4 +3,5 @@ export enum authTypes {
   "AUTH_SUCCESS",
   "AUTH_ERROR",
   "AUTH_LOGOUT",
+  "AUTH_FINISH",
 }

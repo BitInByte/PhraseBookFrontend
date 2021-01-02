@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 // Import components
 import BurgerButton from "./SideDrawer/SideDrawerButton/SideDrawerButton";
 import NavItems from "./NavItems";
-import BackDrop from "./SideDrawer/BackDrop/BackDrop";
+import BackDrop from "../../ui/BackDrop/BackDrop";
 import SideDrawer from "./SideDrawer/SideDrawer";
 
 // Styles

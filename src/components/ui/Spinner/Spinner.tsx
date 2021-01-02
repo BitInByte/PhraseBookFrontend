@@ -7,6 +7,13 @@ import PropTypes from "prop-types";
 
 // Styles
 const SpinnerWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const SpinnerElement = styled.div`
   display: inline-block;
   position: relative;
   width: 80px;
@@ -94,25 +101,60 @@ const SpinnerWrapper = styled.div`
 `;
 
 // Interface
-interface IProps {}
+interface IProps {
+  withWrapper?: boolean;
+}
 
 // Component
-const Spinner: React.FC<IProps> = () => {
-  return (
-    <SpinnerWrapper>
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-    </SpinnerWrapper>
-  );
+const Spinner: React.FC<IProps> = ({ withWrapper }) => {
+  let content;
+  if (withWrapper) {
+    content = (
+      <SpinnerWrapper>
+        <SpinnerElement>
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+        </SpinnerElement>
+      </SpinnerWrapper>
+    );
+  } else {
+    content = (
+      <SpinnerElement>
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+      </SpinnerElement>
+    );
+  }
+  return content;
+  // return (
+  //   <SpinnerElement>
+  //     <div />
+  //     <div />
+  //     <div />
+  //     <div />
+  //     <div />
+  //     <div />
+  //     <div />
+  //     <div />
+  //   </SpinnerElement>
+  // );
 };
 
 // Prop types declaration
-Spinner.propTypes = {};
+Spinner.propTypes = {
+  withWrapper: PropTypes.bool,
+};
 
 export default Spinner;

@@ -15,7 +15,27 @@ type loginResponse = {
   };
 };
 
+type signupResponse = {
+  token: string;
+  message: string;
+  exp: number;
+  data: {
+    user: {
+      authorName: string;
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+  };
+};
+
 type loginReturn = {
+  token: string;
+  exp: number;
+};
+
+type signUpReturn = {
   token: string;
   exp: number;
 };
@@ -27,11 +47,11 @@ class User {
   private firstName: string;
   private lastName: string;
 
-  constructor(email: string) {
+  constructor(email: string, firstName = "", lastName = "") {
     this.email = email;
     this.userId = "";
-    this.firstName = "";
-    this.lastName = "";
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
 
   // public login(password: string): AxiosResponse<loginResponse> {}
@@ -56,9 +76,34 @@ class User {
         exp: response.data.exp,
       };
     } catch (e) {
-      const error = e as AxiosError;
+      const error = e as AxiosError<{ message: string }>;
       console.log(error.response);
       // Send the error
+      return error.response!.data.message;
+    }
+  }
+
+  public async signUp(password: string): Promise<signUpReturn | string> {
+    let response: AxiosResponse<signupResponse>;
+    try {
+      response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/signup`,
+        {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.email,
+          password,
+        }
+      );
+      this.userId = response.data.data.user.id;
+      this.firstName = response.data.data.user.firstName;
+      this.lastName = response.data.data.user.lastName;
+      return {
+        token: response.data.token,
+        exp: response.data.exp,
+      };
+    } catch (e) {
+      const error = e as AxiosError<{ message: string }>;
       return error.response!.data.message;
     }
   }

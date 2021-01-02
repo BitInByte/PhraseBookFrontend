@@ -1,12 +1,17 @@
 // Import libraries
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 
 // Import components
 import LoginForm from "../components/auth/Login/LoginForm";
 import RegisterForm from "../components/auth/Register/RegisterForm";
 import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
+import MessageModal from "../components/ui/MessageModal/MessageModal";
+import Spinner from "../components/ui/Spinner/Spinner";
+import { finishSession } from "../store/actions/authAction";
+import { authTypes } from "../store/actions/actionTypes";
 
 // Styles
 // const AuthWrapper = styled.div`
@@ -31,22 +36,64 @@ interface IProps {}
 
 // Component
 const AuthPage: React.FC<IProps> = () => {
+  const dispatch = useDispatch();
   const [isRegisterMode, setRegisterMode] = useState(false);
+  // const [showErrorModal, setShowErrorModal] = useState(false);
+  console.log("MOUNTING AUTH PAGE");
+  console.log(isRegisterMode);
+
+  const auth: IAuthState = useSelector((state: IStore) => state.auth);
+
+  // if (auth.error) {
+  //   // The DOM will be empty at this moment, so we need to delay the modal to see the animation
+  //   // setTimeout(() => {
+  //   //   setShowErrorModal(true);
+  //   // }, 200);
+  //   // setTimeout(() => {
+  //   //   setShowErrorModal(false);
+  //   // }, 4800);
+  //   const interval = setInterval(() => {
+  //     console.log("Dispatching error clear");
+  //     // Dispatch the clear error async action
+  //     dispatch({
+  //       type: authTypes.AUTH_FINISH,
+  //     });
+  //     // Clear interval after action performed
+  //     clearInterval(interval);
+  //   }, 5000);
+  // }
 
   const toggleRegistrationModeHandler = () => {
     setRegisterMode(prevState => !prevState);
   };
 
+  let authForm;
+  if (isRegisterMode) {
+    authForm = (
+      <RegisterForm
+        onButtonPush={toggleRegistrationModeHandler}
+        isLoading={!!auth.loading}
+      />
+    );
+  } else {
+    authForm = (
+      <LoginForm
+        onButtonPush={toggleRegistrationModeHandler}
+        isLoading={!!auth.loading}
+      />
+    );
+  }
+
   return (
-    <SectionWrapper>
-      <FormWrapper>
-        {isRegisterMode ? (
-          <RegisterForm onButtonPush={toggleRegistrationModeHandler} />
-        ) : (
-          <LoginForm onButtonPush={toggleRegistrationModeHandler} />
-        )}
-      </FormWrapper>
-    </SectionWrapper>
+    <>
+      <MessageModal isError message={auth.error} />
+      {/*{auth.loading && <Spinner />}*/}
+      {/*{!auth.loading && (*/}
+      <SectionWrapper>
+        <FormWrapper>{authForm}</FormWrapper>
+      </SectionWrapper>
+      {/*)}*/}
+    </>
   );
 };
 

@@ -13,7 +13,9 @@ declare module "styled-components" {
       yellow: string;
       darkYellow: string;
       red: string;
+      bgRed: string;
       green: string;
+      bgGreen: string;
       grey: string;
       black: string;
       white: string;

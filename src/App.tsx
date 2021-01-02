@@ -64,7 +64,10 @@ const App = () => {
 
   // const routes = router(false);
   let content;
-  if ((auth && auth.loading) || !isReady) {
+  // if ((auth && auth.loading) || !isReady) {
+  console.log("AUTH@@@@@@@");
+  console.log(auth);
+  if (!auth || !isReady) {
     content = (
       <div>
         <Layout>

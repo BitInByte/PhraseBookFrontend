@@ -18,13 +18,13 @@ const authStart = (): authStartAction => {
 type authSuccessAction = {
   // __typename: "success";
   type: authTypes.AUTH_SUCCESS;
-  payload: { token: string };
+  payload: { token: string; userInitials: string };
 };
 
-const authSuccess = (token: string): authSuccessAction => {
+const authSuccess = (token: string, initials: string): authSuccessAction => {
   return {
     type: authTypes.AUTH_SUCCESS,
-    payload: { token },
+    payload: { token, userInitials: initials },
     // __typename: "success",
   };
 };
@@ -53,6 +53,16 @@ const authLogout = (): authLogoutAction => {
   };
 };
 
+type authFinishAction = {
+  type: authTypes.AUTH_FINISH;
+};
+
+const authFinish = (): authFinishAction => {
+  return {
+    type: authTypes.AUTH_FINISH,
+  };
+};
+
 export const login = ({ email, password }: loginBody): AppThunk => {
   return async dispatch => {
     // Fires up the loading
@@ -75,16 +85,31 @@ export const login = ({ email, password }: loginBody): AppThunk => {
       console.log(new Date(response.exp * 1000));
       console.log(Date.now());
       // Store token and exp date on localStorage
-      localStorage.setItem("token", response.token);
-      localStorage.setItem(
-        "expirationDate",
-        new Date(response.exp * 1000).toString()
-      );
-      localStorage.setItem("userId", loginUser.getUserId());
+      // localStorage.setItem("token", response.token);
+      // localStorage.setItem(
+      //   "expirationDate",
+      //   new Date(response.exp * 1000).toString()
+      // );
+      // localStorage.setItem("userId", loginUser.getUserId());
       // Dispatch action
       console.log("Success");
-      console.log(response.token);
-      dispatch(authSuccess(response.token));
+      console.log(
+        loginUser.getFirstName().split("")[0] +
+          loginUser.getLastName().split("")[0]
+      );
+      const initials = (
+        loginUser.getFirstName().split("")[0] +
+        loginUser.getLastName().split("")[0]
+      ).toUpperCase();
+      // localStorage.setItem("userInitials", initials);
+      addLocalStorageUserInformation(
+        response.token,
+        response.exp,
+        loginUser.getUserId(),
+        initials
+      );
+
+      dispatch(authSuccess(response.token, initials));
       // }
     } else if (typeof response === "string") {
       // Dispatch action
@@ -131,8 +156,9 @@ export const checkSession = (): AppThunk => {
       if (expirationDate >= Date.now()) {
         console.log("@@@@@ STILL VALID @@@@@");
         const token = localStorage.getItem("token");
-        if (token) {
-          dispatch(authSuccess(token));
+        const userInitials = localStorage.getItem("userInitials");
+        if (token && userInitials) {
+          dispatch(authSuccess(token, userInitials));
         }
         // console.log(expirationDate);
         // console.log(new Date(expirationDate));
@@ -151,7 +177,8 @@ export const checkSession = (): AppThunk => {
       }
     } else {
       console.log("@@@@@ THERE IS NO SESSION STORED! @@@@@");
-      dispatch(authError("No Session Stored"));
+      // dispatch(authError("No Session Stored"));
+      dispatch(authFinish());
     }
   };
 };
@@ -167,14 +194,75 @@ export const logout = (): AppThunk => {
   };
 };
 
+export const signUp = ({
+  firstName,
+  lastName,
+  email,
+  password,
+}: signupBody): AppThunk => {
+  return async dispatch => {
+    //  Fires up the loading
+    dispatch(authStart());
+    //  Try to signUp
+    const newUser = new User(email, firstName, lastName);
+    let response;
+    response = await newUser.signUp(password);
+    if (typeof response === "object") {
+      // localStorage.setItem("token", response.token);
+      // localStorage.setItem(
+      //     "expirationDate",
+      //     new Date(response.exp * 1000).toString()
+      // );
+      // localStorage.setItem("userId", loginUser.getUserId());
+      // Dispatch action
+      // console.log("Success");
+      // console.log(
+      //     loginUser.getFirstName().split("")[0] +
+      //     loginUser.getLastName().split("")[0]
+      // );
+      const initials = (
+        newUser.getFirstName().split("")[0] + newUser.getLastName().split("")[0]
+      ).toUpperCase();
+      // localStorage.setItem("userInitials", initials);
+      addLocalStorageUserInformation(
+        response.token,
+        response.exp,
+        newUser.getUserId(),
+        initials
+      );
+      dispatch(authSuccess(response.token, initials));
+    } else if (typeof response === "string") {
+      dispatch(authError(response));
+    }
+  };
+};
+
+export const finishSession = () => {
+  authFinish();
+};
+
 const removeLocalStorageUserInformation = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("expirationDate");
   localStorage.removeItem("userId");
+  localStorage.removeItem("userInitials");
+};
+
+const addLocalStorageUserInformation = (
+  token: string,
+  expDate: number,
+  userId: string,
+  userInitials: string
+) => {
+  localStorage.setItem("token", token);
+  localStorage.setItem("expirationDate", new Date(expDate * 1000).toString());
+  localStorage.setItem("userId", userId);
+  localStorage.setItem("userInitials", userInitials);
 };
 
 export type authActions =
   | authStartAction
   | authSuccessAction
   | authErrorAction
-  | authLogoutAction;
+  | authLogoutAction
+  | authFinishAction;

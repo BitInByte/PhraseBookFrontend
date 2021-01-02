@@ -13,6 +13,7 @@ const initialState: IAuthState = {
   // userId: null,
   error: null,
   loading: null,
+  userInitials: null,
 };
 
 const authStart = (state: IAuthState, _: authActions): IAuthState => {
@@ -28,11 +29,13 @@ const authStart = (state: IAuthState, _: authActions): IAuthState => {
 
 const authSuccess = (state: IAuthState, action: authActions): IAuthState => {
   let token = null;
+  let userInitials = null;
   console.log("&&&&&ACTION");
   console.log(action);
   if (action.type === authTypes.AUTH_SUCCESS) {
     // if (action.__typename === "success") {
     token = action.payload.token;
+    userInitials = action.payload.userInitials;
     console.log("Token");
     console.log(token);
   }
@@ -41,6 +44,7 @@ const authSuccess = (state: IAuthState, action: authActions): IAuthState => {
     token,
     loading: false,
     error: null,
+    userInitials,
   };
 };
 
@@ -69,6 +73,12 @@ const authLogout = (state: IAuthState, _: authActions): IAuthState => {
   };
 };
 
+const authFinish = (state: IAuthState, _: authActions): IAuthState => {
+  return {
+    ...initialState,
+  };
+};
+
 const authReducer = (state = initialState, action: authActions) => {
   switch (action.type) {
     case authTypes.AUTH_START:
@@ -79,6 +89,8 @@ const authReducer = (state = initialState, action: authActions) => {
       return authError(state, action);
     case authTypes.AUTH_LOGOUT:
       return authLogout(state, action);
+    case authTypes.AUTH_FINISH:
+      return authFinish(state, action);
     default:
       return state;
   }
