@@ -60,16 +60,28 @@ const Button: React.FC<IProps> = ({
   isDisabled,
   type,
   buttonPushHandler,
-}) => (
-  <ButtonStyles
-    isFilled={isFilled}
-    disabled={isDisabled}
-    type={type}
-    onClick={buttonPushHandler}
-  >
-    {text}
-  </ButtonStyles>
-);
+}) => {
+  console.log("££££££BUTTON RENDERING");
+  return (
+    <ButtonStyles
+      isFilled={isFilled}
+      disabled={isDisabled}
+      type={type}
+      onClick={buttonPushHandler}>
+      {text}
+    </ButtonStyles>
+  );
+};
+
+const areEqual = (prevProps: IProps, nextProps: IProps): boolean => {
+  return !(
+    prevProps.text !== nextProps.text ||
+    prevProps.isFilled !== nextProps.isFilled ||
+    prevProps.isDisabled !== nextProps.isDisabled ||
+    prevProps.type !== nextProps.type ||
+    prevProps.buttonPushHandler !== nextProps.buttonPushHandler
+  );
+};
 
 // Prop types declaration
 Button.propTypes = {
@@ -83,4 +95,4 @@ Button.defaultProps = {
   type: "button",
 };
 
-export default Button;
+export default React.memo(Button, areEqual);

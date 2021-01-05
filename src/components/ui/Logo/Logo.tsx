@@ -37,11 +37,15 @@ const LogoWord = styled.p`
 interface IProps {}
 
 // Component
-const Logo: React.FC<IProps> = () => (
-  <Link to="/">
-    <LogoWord>Phrasebook</LogoWord>
-  </Link>
-);
+const Logo: React.FC<IProps> = React.memo(() => {
+  console.log("£££££££Rendering logo");
+
+  return (
+    <Link to="/">
+      <LogoWord>Phrasebook</LogoWord>
+    </Link>
+  );
+});
 
 // Prop types declaration
 Logo.propTypes = {};

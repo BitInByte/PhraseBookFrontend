@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import Logo from "../ui/Logo/Logo";
 import SearchBar from "../SearchBar/SearchBar";
 import NavBar from "./NavBar/NavBar";
+import UserPin from "./UserPin/UserPin";
 
 // Styles
 const HeaderWrapper = styled.header`
@@ -26,11 +27,17 @@ interface IProps {}
 const Header: React.FC<IProps> = () => {
   const auth: IAuthState = useSelector((state: IStore) => state.auth);
 
+  let userInitials = "";
+  if (auth.userInitials) {
+    userInitials = auth.userInitials;
+  }
+
   return (
     <HeaderWrapper>
       <Logo />
       {auth.token && <SearchBar />}
       <NavBar isAuth={auth.token} />
+      <UserPin userInitials={userInitials} />
     </HeaderWrapper>
   );
 };

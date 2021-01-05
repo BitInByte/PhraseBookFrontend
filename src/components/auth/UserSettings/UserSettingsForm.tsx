@@ -14,6 +14,8 @@ import H2 from "../../ui/Typography/H2";
 import Button from "../../ui/Button/Button";
 import Spinner from "../../ui/Spinner/Spinner";
 
+import User from "../../../models/User";
+
 // Styles
 const Form = styled.form`
   width: 100%;
@@ -22,8 +24,9 @@ const Form = styled.form`
 
 // Interface
 interface IProps {
-  onButtonPush: () => void;
+  // onButtonPush: () => void;
   isLoading: boolean | null;
+  user: User;
 }
 
 type stateElement = {
@@ -32,35 +35,45 @@ type stateElement = {
   isTouched: boolean;
 };
 
-interface IRegisterState {
+interface ISettingsState {
   firstName: stateElement;
   lastName: stateElement;
   email: stateElement;
+  oldPassword: stateElement;
   password: stateElement;
   repeatPassword: stateElement;
   [key: string]: stateElement;
 }
 
 // Component
-const RegisterForm: React.FC<IProps> = ({ onButtonPush, isLoading }) => {
+const UserSettingsForm: React.FC<IProps> = ({ isLoading, user }) => {
+  console.log("USER");
+  console.log(user);
+
   const dispatch = useDispatch();
+
   const {
     formState,
     inputValueHandler,
     formValidationHandler,
     inputTouchedHandler,
-  } = useForm<IRegisterState>({
+  } = useForm<ISettingsState>({
     firstName: {
-      value: "",
+      value: user.getFirstName(),
       isValid: false,
       isTouched: false,
     },
     lastName: {
-      value: "",
+      value: user ? user.getLastName() : "",
       isValid: false,
       isTouched: false,
     },
     email: {
+      value: user ? user.getEmail() : "",
+      isValid: false,
+      isTouched: false,
+    },
+    oldPassword: {
       value: "",
       isValid: false,
       isTouched: false,
@@ -119,20 +132,6 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush, isLoading }) => {
     }
     await inputValueHandler(id, event.target.value, validator);
 
-    //  Validate the form
-    // let formValidation = true;
-    // console.log("Validation");
-    // for (const elem in formState.inputs) {
-    //   console.log(formState.inputs[elem].isValid);
-    //   formValidation = formValidation && formState.inputs[elem].isValid;
-    //   // console.log(state.inputs[elem].isValid);
-    // }
-    //
-    // if (
-    //   formState.inputs.password.value !== formState.inputs.repeatPassword.value
-    // ) {
-    //   formValidation = false;
-    // }
     // formValidationHandler(formValidation);
     console.log("FORM VALIDATION");
     // console.log(formValidation);
@@ -165,7 +164,7 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush, isLoading }) => {
   } else {
     content = (
       <>
-        <H2>Registration</H2>
+        <H2>User Settings</H2>
         <Form onSubmit={submitHandler}>
           <Input
             label="First Name"
@@ -204,6 +203,18 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush, isLoading }) => {
             isTouched={formState.inputs.email.isTouched}
           />
           <Input
+            label="Old Password"
+            type="password"
+            element="input"
+            errorMessage="The password should have at least 8 characters!"
+            isValid={formState.inputs.oldPassword.isValid}
+            id="oldPassword"
+            value={formState.inputs.password.value}
+            onChangeHandler={changeHandler}
+            onBlurHandler={touchedHandler}
+            isTouched={formState.inputs.oldPassword.isTouched}
+          />
+          <Input
             label="Password"
             type="password"
             element="input"
@@ -228,99 +239,23 @@ const RegisterForm: React.FC<IProps> = ({ onButtonPush, isLoading }) => {
             isTouched={formState.inputs.repeatPassword.isTouched}
           />
           <Button
-            text="Register"
+            text="Submit Changes"
             isFilled
             isDisabled={!formState.isFormValid}
             type="submit"
           />
-          <Button text="Login" buttonPushHandler={onButtonPush} />
         </Form>
       </>
     );
   }
 
   return content;
-
-  // {isLoading ? <Spinner /> : (
-  //     <>
-  // <H2>Registration</H2>
-  // <Form onSubmit={submitHandler}>
-  //   <Input
-  //     label="First Name"
-  //     type="text"
-  //     element="input"
-  //     errorMessage="You should provide you're last name!"
-  //     isValid={formState.inputs.firstName.isValid}
-  //     id="firstName"
-  //     value={formState.inputs.firstName.value}
-  //     onChangeHandler={changeHandler}
-  //     onBlurHandler={touchedHandler}
-  //     isTouched={formState.inputs.firstName.isTouched}
-  //   />
-  //   <Input
-  //     label="Last Name"
-  //     type="text"
-  //     element="input"
-  //     errorMessage="You should provide you're first name!"
-  //     isValid={formState.inputs.lastName.isValid}
-  //     id="lastName"
-  //     value={formState.inputs.lastName.value}
-  //     onChangeHandler={changeHandler}
-  //     onBlurHandler={touchedHandler}
-  //     isTouched={formState.inputs.lastName.isTouched}
-  //   />
-  //   <Input
-  //     label="Email"
-  //     type="text"
-  //     element="input"
-  //     errorMessage="Your email is not valid!"
-  //     isValid={formState.inputs.email.isValid}
-  //     id="email"
-  //     value={formState.inputs.email.value}
-  //     onChangeHandler={changeHandler}
-  //     onBlurHandler={touchedHandler}
-  //     isTouched={formState.inputs.email.isTouched}
-  //   />
-  //   <Input
-  //     label="Password"
-  //     type="password"
-  //     element="input"
-  //     errorMessage="The password should have at least 8 characters!"
-  //     isValid={formState.inputs.password.isValid}
-  //     id="password"
-  //     value={formState.inputs.password.value}
-  //     onChangeHandler={changeHandler}
-  //     onBlurHandler={touchedHandler}
-  //     isTouched={formState.inputs.password.isTouched}
-  //   />
-  //   <Input
-  //     label="Repeat Password"
-  //     type="password"
-  //     element="input"
-  //     errorMessage="The password should have at least 8 characters!"
-  //     isValid={formState.inputs.repeatPassword.isValid}
-  //     id="repeatPassword"
-  //     value={formState.inputs.repeatPassword.value}
-  //     onChangeHandler={changeHandler}
-  //     onBlurHandler={touchedHandler}
-  //     isTouched={formState.inputs.repeatPassword.isTouched}
-  //   />
-  //   <Button
-  //     text="Register"
-  //     isFilled
-  //     isDisabled={!formState.isFormValid}
-  //     type="submit"
-  //   />
-  //   <Button text="Login" buttonPushHandler={onButtonPush} />
-  // </Form>
-  //       </>
-  //   )}
 };
 
 // Prop types declaration
-RegisterForm.propTypes = {
+UserSettingsForm.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  onButtonPush: PropTypes.func.isRequired,
+  // onButtonPush: PropTypes.func.isRequired,
 };
 
-export default RegisterForm;
+export default UserSettingsForm;

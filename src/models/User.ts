@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import axiosToken from "../utils/axios-instance";
 
 type loginResponse = {
   token: string;
@@ -40,6 +41,15 @@ type signUpReturn = {
   exp: number;
 };
 
+type userSettingsReturn = {
+  message: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+};
+
 class User {
   private userId: string;
   private email: string;
@@ -47,7 +57,7 @@ class User {
   private firstName: string;
   private lastName: string;
 
-  constructor(email: string, firstName = "", lastName = "") {
+  constructor(email = "", firstName = "", lastName = "") {
     this.email = email;
     this.userId = "";
     this.firstName = firstName;
@@ -102,6 +112,24 @@ class User {
         token: response.data.token,
         exp: response.data.exp,
       };
+    } catch (e) {
+      const error = e as AxiosError<{ message: string }>;
+      return error.response!.data.message;
+    }
+  }
+
+  public static async fetchUserSettings(token: string) {
+    let response: AxiosResponse<userSettingsReturn>;
+    let newUser;
+    try {
+      response = await axiosToken(token).get("/user/me");
+      newUser = new User(
+        response.data.user.email,
+        response.data.user.firstName,
+        response.data.user.lastName
+      );
+      return newUser;
+      // console.log(response);
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
       return error.response!.data.message;
