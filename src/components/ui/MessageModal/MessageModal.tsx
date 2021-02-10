@@ -33,11 +33,12 @@ const MessageModalWrapper = styled.div<IStyled>`
 // Interface
 interface IProps extends IStyled {
   message?: string | null;
+  clearError?: () => void;
   // showModal: boolean;
 }
 
 // Component
-const MessageModal: React.FC<IProps> = ({ message, isError }) => {
+const MessageModal: React.FC<IProps> = ({ message, isError, clearError }) => {
   const dispatch = useDispatch();
   const elementId = "message-modal-hook";
   const htmlElement = document.getElementById(elementId);
@@ -56,10 +57,14 @@ const MessageModal: React.FC<IProps> = ({ message, isError }) => {
     // }, 4800);
     const interval = setInterval(() => {
       console.log("Dispatching error clear");
-      // Dispatch the clear error async action
-      dispatch({
-        type: authTypes.AUTH_FINISH,
-      });
+      if (clearError) {
+        clearError();
+      } else {
+        // Dispatch the clear error async action
+        dispatch({
+          type: authTypes.CLEAR_ERROR,
+        });
+      }
       // Clear interval after action performed
       clearInterval(interval);
     }, 5000);

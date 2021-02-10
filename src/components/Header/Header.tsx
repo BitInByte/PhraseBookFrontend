@@ -37,7 +37,7 @@ const Header: React.FC<IProps> = () => {
       <Logo />
       {auth.token && <SearchBar />}
       <NavBar isAuth={auth.token} />
-      <UserPin userInitials={userInitials} />
+      {auth.token && <UserPin userInitials={userInitials} />}
     </HeaderWrapper>
   );
 };

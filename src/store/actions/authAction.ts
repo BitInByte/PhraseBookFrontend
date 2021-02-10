@@ -1,12 +1,20 @@
 import { authTypes } from "./actionTypes";
 import { AppThunk } from "../types/thunk";
 import User from "../../models/User";
+import {
+  authStartAction,
+  authSuccessAction,
+  authErrorAction,
+  authLogoutAction,
+  authFinishAction,
+  authErrorClear,
+} from "./types/authTypes";
 
-type authStartAction = {
-  // __typename: "start";
-  type: authTypes.AUTH_START;
-  // payload: null;
-};
+// type authStartAction = {
+//   // __typename: "start";
+//   type: authTypes.AUTH_START;
+//   // payload: null;
+// };
 
 const authStart = (): authStartAction => {
   return {
@@ -15,11 +23,11 @@ const authStart = (): authStartAction => {
   };
 };
 
-type authSuccessAction = {
-  // __typename: "success";
-  type: authTypes.AUTH_SUCCESS;
-  payload: { token: string; userInitials: string };
-};
+// type authSuccessAction = {
+//   // __typename: "success";
+//   type: authTypes.AUTH_SUCCESS;
+//   payload: { token: string; userInitials: string };
+// };
 
 const authSuccess = (token: string, initials: string): authSuccessAction => {
   return {
@@ -29,11 +37,11 @@ const authSuccess = (token: string, initials: string): authSuccessAction => {
   };
 };
 
-type authErrorAction = {
-  // __typename: "error";
-  type: authTypes.AUTH_ERROR;
-  payload: { error: string };
-};
+// type authErrorAction = {
+//   // __typename: "error";
+//   type: authTypes.AUTH_ERROR;
+//   payload: { error: string };
+// };
 
 const authError = (error: string): authErrorAction => {
   return {
@@ -43,9 +51,9 @@ const authError = (error: string): authErrorAction => {
   };
 };
 
-type authLogoutAction = {
-  type: authTypes.AUTH_LOGOUT;
-};
+// type authLogoutAction = {
+//   type: authTypes.AUTH_LOGOUT;
+// };
 
 const authLogout = (): authLogoutAction => {
   return {
@@ -53,15 +61,19 @@ const authLogout = (): authLogoutAction => {
   };
 };
 
-type authFinishAction = {
-  type: authTypes.AUTH_FINISH;
-};
+// type authFinishAction = {
+//   type: authTypes.AUTH_FINISH;
+// };
 
 const authFinish = (): authFinishAction => {
   return {
     type: authTypes.AUTH_FINISH,
   };
 };
+
+// type authErrorClear = {
+//   type: authTypes.CLEAR_ERROR;
+// };
 
 export const login = ({ email, password }: loginBody): AppThunk => {
   return async dispatch => {
@@ -81,7 +93,7 @@ export const login = ({ email, password }: loginBody): AppThunk => {
     // if (loginUser.getUserId()) {
     if (typeof response === "object") {
       console.log("00000000DATE RECEIVED");
-      console.log(response.exp.toString());
+      // console.log(response.exp.toString());
       console.log(new Date(response.exp * 1000));
       console.log(Date.now());
       // Store token and exp date on localStorage
@@ -260,9 +272,10 @@ const addLocalStorageUserInformation = (
   localStorage.setItem("userInitials", userInitials);
 };
 
-export type authActions =
-  | authStartAction
-  | authSuccessAction
-  | authErrorAction
-  | authLogoutAction
-  | authFinishAction;
+// export type authActions =
+//   | authStartAction
+//   | authSuccessAction
+//   | authErrorAction
+//   | authLogoutAction
+//   | authFinishAction
+//   | authErrorClear;

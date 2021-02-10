@@ -50,6 +50,25 @@ type userSettingsReturn = {
   };
 };
 
+type userPatchSettingsReturn = {
+  status: string;
+  data: {
+    user: {
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+  };
+};
+
+type userPatchBody = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  oldPassword?: string;
+  newPassword?: string;
+};
+
 class User {
   private userId: string;
   private email: string;
@@ -130,6 +149,32 @@ class User {
       );
       return newUser;
       // console.log(response);
+    } catch (e) {
+      console.log(e);
+      const error = e as AxiosError<{ message: string }>;
+      return error.response!.data.message;
+    }
+  }
+
+  public async patchUserSettings(
+    token: string,
+    oldPassword = "",
+    newPassword = ""
+  ) {
+    let response: AxiosResponse<userPatchSettingsReturn>;
+    const bodyData: userPatchBody = {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+    };
+    // bodyData.firstName = this.firstName;
+    // bodyData.lastName = this.lastName;
+    // bodyData.email = this.email;
+    if (oldPassword.length > 0) bodyData.oldPassword = oldPassword;
+    if (newPassword.length > 0) bodyData.newPassword = newPassword;
+    try {
+      response = await axiosToken(token).patch("/user/me", bodyData);
+      return response;
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
       return error.response!.data.message;

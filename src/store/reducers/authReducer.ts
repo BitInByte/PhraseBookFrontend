@@ -1,5 +1,5 @@
 import { authTypes } from "../actions/actionTypes";
-import { authActions } from "../actions/authAction";
+import authActions from "../actions/types/authTypes";
 
 // export interface authState {
 //   token: string | null;
@@ -78,6 +78,12 @@ const authFinish = (state: IAuthState, _: authActions): IAuthState => {
     ...initialState,
   };
 };
+const clearError = (state: IAuthState, _: authActions): IAuthState => {
+  return {
+    ...state,
+    error: null,
+  };
+};
 
 const authReducer = (state = initialState, action: authActions) => {
   switch (action.type) {
@@ -91,6 +97,8 @@ const authReducer = (state = initialState, action: authActions) => {
       return authLogout(state, action);
     case authTypes.AUTH_FINISH:
       return authFinish(state, action);
+    case authTypes.CLEAR_ERROR:
+      return clearError(state, action);
     default:
       return state;
   }
