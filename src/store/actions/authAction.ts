@@ -1,4 +1,4 @@
-import { authTypes } from "./actionTypes";
+import actionTypes from "./actionTypes";
 import { AppThunk } from "../types/thunk";
 import User from "../../models/User";
 import {
@@ -12,26 +12,26 @@ import {
 
 // type authStartAction = {
 //   // __typename: "start";
-//   type: authTypes.AUTH_START;
+//   type: actionTypes.AUTH_START;
 //   // payload: null;
 // };
 
 const authStart = (): authStartAction => {
   return {
-    type: authTypes.AUTH_START,
+    type: actionTypes.AUTH_START,
     // __typename: "start",
   };
 };
 
 // type authSuccessAction = {
 //   // __typename: "success";
-//   type: authTypes.AUTH_SUCCESS;
+//   type: actionTypes.AUTH_SUCCESS;
 //   payload: { token: string; userInitials: string };
 // };
 
 const authSuccess = (token: string, initials: string): authSuccessAction => {
   return {
-    type: authTypes.AUTH_SUCCESS,
+    type: actionTypes.AUTH_SUCCESS,
     payload: { token, userInitials: initials },
     // __typename: "success",
   };
@@ -39,40 +39,40 @@ const authSuccess = (token: string, initials: string): authSuccessAction => {
 
 // type authErrorAction = {
 //   // __typename: "error";
-//   type: authTypes.AUTH_ERROR;
+//   type: actionTypes.AUTH_ERROR;
 //   payload: { error: string };
 // };
 
 const authError = (error: string): authErrorAction => {
   return {
-    type: authTypes.AUTH_ERROR,
+    type: actionTypes.AUTH_ERROR,
     payload: { error },
     // __typename: "error",
   };
 };
 
 // type authLogoutAction = {
-//   type: authTypes.AUTH_LOGOUT;
+//   type: actionTypes.AUTH_LOGOUT;
 // };
 
 const authLogout = (): authLogoutAction => {
   return {
-    type: authTypes.AUTH_LOGOUT,
+    type: actionTypes.AUTH_LOGOUT,
   };
 };
 
 // type authFinishAction = {
-//   type: authTypes.AUTH_FINISH;
+//   type: actionTypes.AUTH_FINISH;
 // };
 
 const authFinish = (): authFinishAction => {
   return {
-    type: authTypes.AUTH_FINISH,
+    type: actionTypes.AUTH_FINISH,
   };
 };
 
 // type authErrorClear = {
-//   type: authTypes.CLEAR_ERROR;
+//   type: actionTypes.CLEAR_ERROR;
 // };
 
 export const login = ({ email, password }: loginBody): AppThunk => {

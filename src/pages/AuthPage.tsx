@@ -11,7 +11,7 @@ import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 import MessageModal from "../components/ui/MessageModal/MessageModal";
 import Spinner from "../components/ui/Spinner/Spinner";
 import { finishSession } from "../store/actions/authAction";
-import { authTypes } from "../store/actions/actionTypes";
+import actionTypes from "../store/actions/actionTypes";
 
 // Styles
 // const AuthWrapper = styled.div`
@@ -56,7 +56,7 @@ const AuthPage: React.FC<IProps> = () => {
   //     console.log("Dispatching error clear");
   //     // Dispatch the clear error async action
   //     dispatch({
-  //       type: authTypes.AUTH_FINISH,
+  //       type: actionTypes.AUTH_FINISH,
   //     });
   //     // Clear interval after action performed
   //     clearInterval(interval);

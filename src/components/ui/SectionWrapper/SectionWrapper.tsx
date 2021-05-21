@@ -10,9 +10,10 @@ const HomePageWrapper = styled.div`
   width: 100rem;
   min-height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 6rem;
-  //align-items: center;
+  align-items: center;
+  flex-direction: column;
 `;
 
 // Interface

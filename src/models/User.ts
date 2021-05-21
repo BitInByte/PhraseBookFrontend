@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { log } from "util";
 import axiosToken from "../utils/axios-instance";
 
 type loginResponse = {
@@ -99,6 +100,7 @@ class User {
       this.userId = response.data.data.user.id;
       this.firstName = response.data.data.user.firstName;
       this.lastName = response.data.data.user.lastName;
+      console.log("User Response: ", response);
 
       return {
         token: response.data.token,

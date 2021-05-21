@@ -1,4 +1,4 @@
-import { authTypes } from "../actions/actionTypes";
+import actionTypes from "../actions/actionTypes";
 import authActions from "../actions/types/authTypes";
 
 // export interface authState {
@@ -32,7 +32,7 @@ const authSuccess = (state: IAuthState, action: authActions): IAuthState => {
   let userInitials = null;
   console.log("&&&&&ACTION");
   console.log(action);
-  if (action.type === authTypes.AUTH_SUCCESS) {
+  if (action.type === actionTypes.AUTH_SUCCESS) {
     // if (action.__typename === "success") {
     token = action.payload.token;
     userInitials = action.payload.userInitials;
@@ -51,7 +51,7 @@ const authSuccess = (state: IAuthState, action: authActions): IAuthState => {
 const authError = (state: IAuthState, action: authActions): IAuthState => {
   let error = null;
   // if (action.__typename === "error") {
-  if (action.type === authTypes.AUTH_ERROR) {
+  if (action.type === actionTypes.AUTH_ERROR) {
     error = action.payload.error;
   }
 
@@ -78,6 +78,7 @@ const authFinish = (state: IAuthState, _: authActions): IAuthState => {
     ...initialState,
   };
 };
+
 const clearError = (state: IAuthState, _: authActions): IAuthState => {
   return {
     ...state,
@@ -87,17 +88,17 @@ const clearError = (state: IAuthState, _: authActions): IAuthState => {
 
 const authReducer = (state = initialState, action: authActions) => {
   switch (action.type) {
-    case authTypes.AUTH_START:
+    case actionTypes.AUTH_START:
       return authStart(state, action);
-    case authTypes.AUTH_SUCCESS:
+    case actionTypes.AUTH_SUCCESS:
       return authSuccess(state, action);
-    case authTypes.AUTH_ERROR:
+    case actionTypes.AUTH_ERROR:
       return authError(state, action);
-    case authTypes.AUTH_LOGOUT:
+    case actionTypes.AUTH_LOGOUT:
       return authLogout(state, action);
-    case authTypes.AUTH_FINISH:
+    case actionTypes.AUTH_FINISH:
       return authFinish(state, action);
-    case authTypes.CLEAR_ERROR:
+    case actionTypes.CLEAR_ERROR:
       return clearError(state, action);
     default:
       return state;

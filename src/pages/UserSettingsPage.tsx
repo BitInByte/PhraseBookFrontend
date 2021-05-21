@@ -8,7 +8,7 @@ import RegisterForm from "../components/auth/Register/RegisterForm";
 import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 import UserSettingsForm from "../components/auth/UserSettings/UserSettingsForm";
 import { useDispatch, useSelector } from "react-redux";
-import { authTypes } from "../store/actions/actionTypes";
+import actionTypes from "../store/actions/actionTypes";
 import Spinner from "../components/ui/Spinner/Spinner";
 import MessageModal from "../components/ui/MessageModal/MessageModal";
 import User from "../models/User";

@@ -3,7 +3,7 @@ import { createGlobalStyle } from "styled-components";
 const globalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600;700&display=swap');
 
-  //     === RESETS === 
+  //     === RESETS ===
   *,
   *::after,
   *::before {
@@ -33,12 +33,12 @@ const globalStyle = createGlobalStyle`
     background-color: transparent;
 
   }
-  
+
   input {
     outline: none;
     border: none;
   }
-  
+
 //  ====== UNIVERSAL PROPERTIES ======
   html {
     font-size: 62.5%; // 1rem = 10px; 10px/16px = 62.5%
@@ -64,23 +64,23 @@ const globalStyle = createGlobalStyle`
     font-family: "Cascadia Code PL", source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
   }
-  
+
   header {
     width: 100vw;
     display: block;
   }
-  
+
   footer {
     min-height: 100%;
   }
-  
+
   section {
     width: 100%;
     min-height: calc(100vh - (9rem + 7.6rem));
     display: flex;
     justify-content: center;
   }
-  
+
 //  ====== FONTS ======
   @font-face {
     font-family: "Fredoka One";
@@ -93,7 +93,7 @@ const globalStyle = createGlobalStyle`
     U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
     U+2215, U+FEFF, U+FFFD;
   }
-  
+
 //  ====== CSS TRANSITION GROUP GLOBAL STYLES ======
   .slide-in-left-enter {
     transform: translateX(-100%);
@@ -115,7 +115,7 @@ const globalStyle = createGlobalStyle`
     opacity: 0;
     transition: all 500ms;
   }
-  
+
   .modal-enter {
     transform: translateY(-10rem);
     opacity: 0;
@@ -136,6 +136,28 @@ const globalStyle = createGlobalStyle`
     transform: translateY(-10rem);
     opacity: 0;
     transition: all 200ms;
+  }
+
+  .opacity-enter {
+    // transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .opacity-enter-active {
+    // transform: translateX(0);
+    opacity: 1;
+    transition: all 500ms;
+  }
+
+  .opacity-exit {
+    // transform: translateX(0%);
+    opacity: 1;
+  }
+
+  .opacity-exit-active {
+    // transform: translateX(-100%);
+    opacity: 0;
+    transition: all 500ms;
   }
 `;
 

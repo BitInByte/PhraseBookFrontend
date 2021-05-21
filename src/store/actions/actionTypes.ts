@@ -1,8 +1,18 @@
-export enum authTypes {
+enum actionTypes {
   "AUTH_START",
   "AUTH_SUCCESS",
   "AUTH_ERROR",
   "AUTH_LOGOUT",
   "AUTH_FINISH",
   "CLEAR_ERROR",
+  "PHRASE_START",
+  "PHRASE_SUCCESS",
+  "PHRASE_ACTION",
+  "PHRASE_ERROR",
+  "PHRASE_CLEAR_ERROR",
+  "PHRASE_ADD_NEW_SUCCESS",
+  "PHRASE_INCREMENT_SUCCESS",
+  "PHRASE_INCREMENT_START",
 }
+
+export default actionTypes;

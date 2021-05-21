@@ -1,29 +1,29 @@
-import { authTypes } from "../actionTypes";
+import actionTypes from "../actionTypes";
 
 export type authStartAction = {
-  type: authTypes.AUTH_START;
+  type: actionTypes.AUTH_START;
 };
 
 export type authSuccessAction = {
-  type: authTypes.AUTH_SUCCESS;
+  type: actionTypes.AUTH_SUCCESS;
   payload: { token: string; userInitials: string };
 };
 
 export type authErrorAction = {
-  type: authTypes.AUTH_ERROR;
+  type: actionTypes.AUTH_ERROR;
   payload: { error: string };
 };
 
 export type authLogoutAction = {
-  type: authTypes.AUTH_LOGOUT;
+  type: actionTypes.AUTH_LOGOUT;
 };
 
 export type authFinishAction = {
-  type: authTypes.AUTH_FINISH;
+  type: actionTypes.AUTH_FINISH;
 };
 
 export type authErrorClear = {
-  type: authTypes.CLEAR_ERROR;
+  type: actionTypes.CLEAR_ERROR;
 };
 
 type authActions =

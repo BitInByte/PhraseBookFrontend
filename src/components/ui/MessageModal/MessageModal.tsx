@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { CSSTransition } from "react-transition-group";
 import PropTypes from "prop-types";
-import { authTypes } from "../../../store/actions/actionTypes";
+import actionTypes from "../../../store/actions/actionTypes";
 import { useDispatch } from "react-redux";
 
 // Import components
@@ -62,7 +62,7 @@ const MessageModal: React.FC<IProps> = ({ message, isError, clearError }) => {
       } else {
         // Dispatch the clear error async action
         dispatch({
-          type: authTypes.CLEAR_ERROR,
+          type: actionTypes.CLEAR_ERROR,
         });
       }
       // Clear interval after action performed

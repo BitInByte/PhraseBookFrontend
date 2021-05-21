@@ -1,14 +1,14 @@
 // Import libraries
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
+import BackDrop from "../ui/BackDrop/BackDrop";
 
 // Import components
 
 // Styles
-
 const FormWrapper = styled.div`
   //width: 100%;
   margin: 0 auto;
@@ -18,6 +18,28 @@ const FormWrapper = styled.div`
   display: flex;
   //align-items: center;
   justify-content: center;
+  position: relative;
+`;
+
+const FormResultModal = styled.div`
+  position: absolute;
+  top: 0;
+  // left: 0;
+  width: 80%;
+  margin-left: 3rem;
+  min-height: 15rem;
+  // background-color: ${props => props.theme.colors.white};
+  background-color: #ffffff;
+  border-radius: 3rem 3rem 0 0;
+  padding: 5rem 1.5rem 1.5rem 1.5rem;
+  text-align: center;
+  border: 0.3rem solid ${props => props.theme.colors.yellow};
+  z-index: 10;
+  visibility: hidden;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: all 0.3s ease-in;
 `;
 
 const Form = styled.form`
@@ -29,6 +51,8 @@ const Form = styled.form`
   border-radius: 3rem;
   border: 0.3rem solid ${props => props.theme.colors.yellow};
   padding: 0.2rem;
+  // z-index: 30;
+  position: relative;
 `;
 
 const Button = styled.button`
@@ -36,13 +60,21 @@ const Button = styled.button`
   color: ${props => props.theme.colors.yellow};
   padding: 0 0.3rem;
 
-  &:hover {
-    cursor: pointer;
+  // &:hover {
+  cursor: pointer;
+  // }
+
+  &:last-of-type {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
   }
 `;
 
 const Input = styled.input`
-  width: 100%;
+  // width: 100%;
+  width: 92%;
   padding: 0.7rem;
   font-family: inherit;
   background: none;
@@ -53,15 +85,68 @@ interface IProps {}
 
 // Component
 const SearchBar: React.FC<IProps> = () => {
+  const [searchInput, setSearchInput] = useState("");
+
+  const searchWindowPopup = useRef<HTMLDivElement>(null);
+  const searchBar = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (searchInput.length > 0) {
+      if (searchWindowPopup && searchWindowPopup.current) {
+        searchWindowPopup.current.style.visibility = "visible";
+        searchWindowPopup.current.style.opacity = "1";
+        searchWindowPopup.current.style.transform = "scaleY(1)";
+      }
+      if (searchBar && searchBar.current) {
+        searchBar.current.style.zIndex = "30";
+      }
+      // setTimeout(() => {
+      // }, 1000);
+    } else {
+      if (searchWindowPopup && searchWindowPopup.current) {
+        searchWindowPopup.current.style.visibility = "hidden";
+        searchWindowPopup.current.style.opacity = "0";
+        searchWindowPopup.current.style.transform = "scaleY(0)";
+      }
+      if (searchBar && searchBar.current) {
+        searchBar.current.style.zIndex = "0";
+      }
+      // setTimeout(() => {
+      // }, 1000);
+    }
+  }, [searchInput]);
+
+  const onInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value);
+  };
+
+  const onDeleteInputValueHandler = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setSearchInput("");
+  };
+
   return (
-    <FormWrapper>
-      <Form>
-        <Button>
-          <FontAwesomeIcon icon={faSearch} size="1x" />
-        </Button>
-        <Input placeholder="Search..." />
-      </Form>
-    </FormWrapper>
+    <>
+      {searchInput.length > 0 && <BackDrop toggleDrawer={() => {}} />}
+      <FormWrapper>
+        <Form ref={searchBar}>
+          <Button>
+            <FontAwesomeIcon icon={faSearch} size="1x" />
+          </Button>
+          <Button onClick={onDeleteInputValueHandler}>
+            <FontAwesomeIcon icon={faTimes} size="1x" />
+          </Button>
+          <Input
+            placeholder="Search..."
+            value={searchInput}
+            onChange={onInputChangeHandler}
+          />
+        </Form>
+        <FormResultModal ref={searchWindowPopup}>Searching</FormResultModal>
+      </FormWrapper>
+    </>
   );
 };
 
