@@ -255,28 +255,50 @@ const UserSettingsForm: React.FC<IProps> = ({
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const {
+      email,
+      firstName,
+      lastName,
+      password,
+      oldPassword,
+    } = formState.inputs;
     console.log(formState.inputs);
     // Fires up the loading state
     changeLoading(true);
     // Create a new user instance
-    const userPatch = new User(
-      formState.inputs.email.value,
-      formState.inputs.firstName.value,
-      formState.inputs.lastName.value
-    );
+    // const userPatch = new User(
+    // formState.inputs.email.value,
+    // formState.inputs.firstName.value,
+    // formState.inputs.lastName.value
+    // );
     // Async connection to the db to patch user settings
-    const response = await userPatch.patchUserSettings(
-      token,
-      formState.inputs.oldPassword.value,
-      formState.inputs.password.value
-    );
-    // If returns string, send an error
-    if (typeof response === "string") {
-      changeError(response);
-      //  Else send a success message
-    } else {
-      changeSuccessMessage("User  Successfully changed!");
+    // const response = await userPatch.patchUserSettings(
+    // token,
+    // formState.inputs.oldPassword.value,
+    // formState.inputs.password.value
+    // );
+    try {
+      // const response = await User.patchUserSettings(token, oldPassword.value, password.value, firstName.value, lastName.value, email.value)
+      await User.patchUserSettings(
+        token,
+        oldPassword.value,
+        password.value,
+        firstName.value,
+        lastName.value,
+        email.value
+      );
+
+      changeSuccessMessage("User Successfully changed!");
+    } catch (error) {
+      changeError(error.message);
     }
+    // If returns string, send an error
+    // if (typeof response === "string") {
+    // changeError(response);
+    // //  Else send a success message
+    // } else {
+    // changeSuccessMessage("User Successfully changed!");
+    // }
     // Finish the loading
     changeLoading(false);
     // dispatch(

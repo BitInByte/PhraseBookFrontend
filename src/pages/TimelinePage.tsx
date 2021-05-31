@@ -5,7 +5,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import PhraseModel from "../models/Phrase";
-import { getPhrases, createPhrase } from "../store/actions/phraseAction";
+import {
+  getPhrases,
+  createPhrase,
+  phraseErrorClear,
+} from "../store/actions/phraseAction";
 import actionTypes from "../store/actions/actionTypes";
 
 // Import components
@@ -13,28 +17,28 @@ import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 import Phrase from "../components/Phrase/Phrase";
 import Spinner from "../components/ui/Spinner/Spinner";
 import MessageModal from "../components/ui/MessageModal/MessageModal";
-import InputModal from "../components/ui/InputModal/InputModal";
+// import InputModal from "../components/ui/InputModal/InputModal";
 import Card from "../components/ui/Card/Card";
 import AddNewPhrase from "../components/AddNewPhrase/AddNewPhrase";
 import InfiniteLoading from "../components/InfiniteLoading/InfiniteLoading";
 
 // Styles
-const AddPhraseStyles = styled.button`
-  padding: 1.7rem 2.5rem;
-  background-color: ${props => props.theme.colors.yellow};
-  border-radius: 50%;
-  position: fixed;
-  bottom: 10rem;
-  right: 3rem;
-  font-size: 3rem;
-  color: ${props => props.theme.colors.pink};
-  transition: all 0.2s ease-in;
-  cursor: pointer;
+// const AddPhraseStyles = styled.button`
+// padding: 1.7rem 2.5rem;
+// background-color: ${props => props.theme.colors.yellow};
+// border-radius: 50%;
+// position: fixed;
+// bottom: 10rem;
+// right: 3rem;
+// font-size: 3rem;
+// color: ${props => props.theme.colors.pink};
+// transition: all 0.2s ease-in;
+// cursor: pointer;
 
-  &:hover {
-    background-color: ${props => props.theme.colors.blue};
-  }
-`;
+// &:hover {
+// background-color: ${props => props.theme.colors.blue};
+// }
+// `;
 
 // Interface
 interface IProps {}
@@ -66,7 +70,8 @@ const TimelinePage: React.FC<IProps> = () => {
     // const phrase = new PhraseModel();
     // await phrases.getPhrases(auth.token!);
     console.log("token: ", auth.token!);
-    dispatch(getPhrases(auth.token!));
+    // dispatch(getPhrases(auth.token!));
+    dispatch(getPhrases());
     // };
     // getPhrasesHandler();
   }, []);
@@ -112,37 +117,53 @@ const TimelinePage: React.FC<IProps> = () => {
   // }
   // };
 
-  let messageModalElement;
-  if (responseMessage) {
-    console.log("Success Message Modal");
-    messageModalElement = (
-      <MessageModal
-        isError={false}
-        message={responseMessage}
-        clearError={() => setResponseMessage(null)}
-      />
-    );
-  } else if (phrases.error) {
-    console.log("Error Message Modal");
-    messageModalElement = <MessageModal isError message={phrases.error} />;
-  }
+  // let messageModalElement;
+  // if (responseMessage) {
+  // console.log("Success Message Modal");
+  // messageModalElement = (
+  // <MessageModal
+  // isError={false}
+  // message={responseMessage}
+  // clearError={() => setResponseMessage(null)}
+  // />
+  // );
+  // } else if (phrases.error) {
+  // console.log("Error Message Modal");
+  // messageModalElement = (
+  // <MessageModal
+  // isError
+  // message={phrases.error}
+  // clearError={() => dispatch(phraseErrorClear())}
+  // />
+  // );
+  // }
 
   let element;
   if (phrases && phrases.phrases && phrases.phrases.length > 0) {
     console.log("Changing element ====");
     element = phrases.phrases.map(phrase => (
       <Phrase
-        key={phrase._id}
-        phrase={phrase.phrase}
-        authorName={phrase.author.firstName + " " + phrase.author.lastName}
-        isLiked={phrase.isLiked}
-        isShared={phrase.isShared}
-        isOwnPhrase={phrase.isOwnPhrase}
+        // key={phrase.id}
+        key={phrase.getId()}
+        // phrase={phrase.phrase}
+        phrase={phrase.getPhrase()}
+        // authorName={phrase.author.firstName + " " + phrase.author.lastName}
+        authorName={
+          phrase.getAuthorFirstName() + " " + phrase.getAuthorLastName()
+        }
+        // isLiked={phrase.isLiked}
+        isLiked={phrase.getIsLiked()}
+        // isShared={phrase.isShared}
+        isShared={phrase.getIsShared()}
+        // isOwnPhrase={phrase.isOwnPhrase}
+        isOwnPhrase={phrase.getIsOwnPhrase()}
         onLikeHandler={_ => {
-          onActionHandler(phrase._id, true);
+          // onActionHandler(phrase.id, true);
+          onActionHandler(phrase.getId(), true);
         }}
         onShareHandler={_ => {
-          onActionHandler(phrase._id, false);
+          // onActionHandler(phrase.id, false);
+          onActionHandler(phrase.getId(), false);
         }}
       />
     ));
@@ -162,7 +183,8 @@ const TimelinePage: React.FC<IProps> = () => {
     const phraseTotal = phrases!.phrases!.length;
     console.log("New Phrase: ", newPhraseInput);
     if (auth.token) {
-      dispatch(createPhrase(auth.token, newPhraseInput));
+      // dispatch(createPhrase(auth.token, newPhraseInput));
+      dispatch(createPhrase(newPhraseInput));
     }
     // setIsAddPhraseModalOpen(false);
 
@@ -192,7 +214,8 @@ const TimelinePage: React.FC<IProps> = () => {
     if (phrases.pagination.hasNextPage) {
       if (auth.token && phrases.pagination && phrases.pagination.page) {
         console.log("Dispatching=========");
-        dispatch(getPhrases(auth.token, phrases.pagination.page + 1, true));
+        // dispatch(getPhrases(auth.token, phrases.pagination.page + 1, true));
+        dispatch(getPhrases(phrases.pagination.page + 1, true));
       }
     }
   };
@@ -207,6 +230,16 @@ const TimelinePage: React.FC<IProps> = () => {
   // ));
   return (
     <>
+      <MessageModal
+        isError
+        message={phrases.error}
+        clearError={() => dispatch(phraseErrorClear())}
+      />
+      <MessageModal
+        isError={false}
+        message={responseMessage}
+        clearError={() => setResponseMessage(null)}
+      />
       {
         // <InputModal isOpen={isAddPhraseModalOpen} toggleModal={toggleInputModal}>
         // <AddNewPhrase
@@ -216,7 +249,9 @@ const TimelinePage: React.FC<IProps> = () => {
         // />
         // </InputModal>
       }
-      {messageModalElement}
+      {
+        //  messageModalElement
+      }
       <SectionWrapper>
         {addNewPhraseElement}
         <InfiniteLoading

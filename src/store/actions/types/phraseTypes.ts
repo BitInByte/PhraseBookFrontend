@@ -1,4 +1,4 @@
-import { phraseType, pagination } from "../../../models/Phrase";
+import Phrase, { pagination } from "../../../models/Phrase";
 import actionTypes from "../actionTypes";
 
 export type phraseStartAction = {
@@ -11,12 +11,14 @@ export type phraseIncrementStartAction = {
 
 export type phraseSuccessAction = {
   type: actionTypes.PHRASE_SUCCESS;
-  payload: { phrases: [phraseType]; pagination: pagination };
+  // payload: { phrases: [phraseType]; pagination: pagination };
+  payload: { phrases: Phrase[]; pagination: pagination };
 };
 
 export type phraseIncrementSuccessAction = {
   type: actionTypes.PHRASE_INCREMENT_SUCCESS;
-  payload: { phrases: [phraseType]; pagination: pagination };
+  // payload: { phrases: [phraseType]; pagination: pagination };
+  payload: { phrases: Phrase[]; pagination: pagination };
 };
 
 export type phraseActionSuccessAction = {
@@ -36,7 +38,8 @@ export type phraseClearError = {
 
 export type phraseAddNewSuccess = {
   type: actionTypes.PHRASE_ADD_NEW_SUCCESS;
-  payload: { phrase: phraseType };
+  // payload: { phrase: phraseType };
+  payload: { phrase: Phrase };
 };
 
 type phraseActions =

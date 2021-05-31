@@ -1,19 +1,11 @@
 import { AxiosError, AxiosResponse } from "axios";
+import Author, { authorType } from "./Author";
 import axiosInstance from "../utils/axios-instance";
 
-type phraseAuthor = {
-  firstName: string;
-  lastName: string;
-  _id: string;
-};
-export type phraseType = {
-  // author: {
-  // firstName: string;
-  // lastName: string;
-  // _id: string;
-  // };
-  author: phraseAuthor;
+type phraseType = {
+  author: authorType;
   countLikes: number;
+  countShares: number;
   createdAt: string;
   isLiked: boolean;
   isShared: boolean;
@@ -39,18 +31,104 @@ type phraseResponse = {
   pagination: pagination;
 };
 
-type phraseAddNewResponse = {
-  data: {
-    phrase: phraseType;
-  };
-};
-
 type phraseActionResponse = {
   status: string;
   message: string;
 };
 
 class Phrase {
+  private id: string;
+  private author: Author;
+  private countLikes: number;
+  private countShares: number;
+  private createdAt: string;
+  private isLiked: boolean;
+  private isShared: boolean;
+  private isOwnPhrase: boolean;
+  private phrase: string;
+  private isPhraseAuthorOnFriendsList: boolean;
+
+  constructor(
+    _id: string,
+    author: authorType,
+    countLikes: number,
+    countShares: number,
+    createdAt: string,
+    isLiked: boolean,
+    isShared: boolean,
+    isOwnPhrase: boolean,
+    phrase: string,
+    isPhraseAuthorOnFriendsList: boolean
+  ) {
+    this.id = _id;
+    this.author = new Author(author._id, author.firstName, author.lastName);
+    this.countLikes = countLikes;
+    this.countShares = countShares;
+    this.createdAt = createdAt;
+    this.isLiked = isLiked;
+    this.isShared = isShared;
+    this.isOwnPhrase = isOwnPhrase;
+    this.phrase = phrase;
+    this.isPhraseAuthorOnFriendsList = isPhraseAuthorOnFriendsList;
+  }
+
+  public toggleIsLiked() {
+    this.isLiked = !this.isLiked;
+  }
+
+  public toggleIsShared() {
+    this.isShared = !this.isShared;
+  }
+
+  public getId() {
+    return this.id.toString();
+  }
+
+  public getAuthor() {
+    return this.author;
+  }
+
+  public getCountLikes() {
+    return this.countLikes;
+  }
+
+  public getCountShares() {
+    return this.countShares;
+  }
+
+  public getCreatedAt() {
+    return this.createdAt;
+  }
+
+  public getIsLiked() {
+    return this.isLiked;
+  }
+
+  public getIsShared() {
+    return this.isShared;
+  }
+
+  public getIsOwnPhrase() {
+    return this.isOwnPhrase;
+  }
+
+  public getPhrase() {
+    return this.phrase;
+  }
+
+  public getIsPhraseAuthorOnFriendsList() {
+    return this.isPhraseAuthorOnFriendsList;
+  }
+
+  public getAuthorFirstName() {
+    return this.author.getFirstName();
+  }
+
+  public getAuthorLastName() {
+    return this.author.getLastName();
+  }
+
+  // static async getPhrases(token: string, page = 1) {
   static async getPhrases(token: string, page = 1) {
     let response: AxiosResponse<phraseResponse>;
     try {
@@ -61,10 +139,17 @@ class Phrase {
       return response.data;
     } catch (err) {
       console.log(err);
+      const error = err as AxiosError;
+      throw new Error(error.message);
     }
   }
 
   static async createPhrase(token: string, phrase: string) {
+    type phraseAddNewResponse = {
+      data: {
+        phrase: phraseType;
+      };
+    };
     let response: AxiosResponse<phraseAddNewResponse>;
     try {
       response = await axiosInstance(token).post(
@@ -87,7 +172,8 @@ class Phrase {
     } catch (err) {
       console.log(err);
       const error = err as AxiosError<phraseActionResponse>;
-      return error;
+      // return error;
+      throw new Error(error.message);
     }
   }
 
@@ -102,11 +188,15 @@ class Phrase {
     } catch (err) {
       const error = err as AxiosError<phraseActionResponse>;
       console.log(err);
-      return error;
+      // return error;
+      throw new Error(error.message);
     }
   }
 
-  static async sharePhrase(token: string, phraseId: string) {
+  static async sharePhrase(
+    token: string,
+    phraseId: string
+  ): Promise<AxiosResponse<phraseActionResponse>> {
     let response: AxiosResponse<phraseActionResponse>;
     try {
       response = await axiosInstance(token).post(
@@ -117,7 +207,8 @@ class Phrase {
     } catch (err) {
       const error = err as AxiosError<phraseActionResponse>;
       console.log(error);
-      return error;
+      // return error;
+      throw new Error(error.message);
     }
   }
 }

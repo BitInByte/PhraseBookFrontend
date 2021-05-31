@@ -39,19 +39,32 @@ const UserSettingsPage: React.FC<IProps> = () => {
 
   useEffect(() => {
     const fetchUserInformation = async () => {
-      let newUser: string | User;
+      // let newUser: string | User;
+      setIsLoading(true);
       if (auth.token) {
-        newUser = await User.fetchUserSettings(auth.token);
-        if (newUser instanceof User) {
+        // newUser = await User.fetchUserSettings(auth.token);
+        try {
+          const response = await User.fetchUserSettings(auth.token);
           setUserInformation({
-            firstName: newUser.getFirstName(),
-            lastName: newUser.getLastName(),
-            email: newUser.getEmail(),
+            firstName: response.data.user.firstName,
+            lastName: response.data.user.lastName,
+            email: response.data.user.email,
           });
+
           setIsLoading(false);
-        } else {
-          setIsErrorMessage(newUser);
+        } catch (error) {
+          setIsErrorMessage(error);
         }
+        // if (newUser instanceof User) {
+        // setUserInformation({
+        // firstName: newUser.getFirstName(),
+        // lastName: newUser.getLastName(),
+        // email: newUser.getEmail(),
+        // });
+        // setIsLoading(false);
+        // } else {
+        // setIsErrorMessage(newUser);
+        // }
       }
     };
     fetchUserInformation();

@@ -1,12 +1,18 @@
 // Import libraries
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, RefObject } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
-import BackDrop from "../ui/BackDrop/BackDrop";
+
+import { userType } from "../../models/User";
 
 // Import components
+import BackDrop from "../ui/BackDrop/BackDrop";
+import Search from "../../models/Search";
+import Spinner from "../ui/Spinner/Spinner";
+import MessageModal from "../ui/MessageModal/MessageModal";
 
 // Styles
 const FormWrapper = styled.div`
@@ -22,6 +28,7 @@ const FormWrapper = styled.div`
 `;
 
 const FormResultModal = styled.div`
+  max-height: 50rem;
   position: absolute;
   top: 0;
   // left: 0;
@@ -40,6 +47,9 @@ const FormResultModal = styled.div`
   transform: scaleY(0);
   transform-origin: top;
   transition: all 0.3s ease-in;
+  overflow: scroll;
+  border-bottom-left-radius: 3rem;
+  border-bottom-right-radius: 3rem;
 `;
 
 const Form = styled.form`
@@ -80,40 +90,109 @@ const Input = styled.input`
   background: none;
 `;
 
+const SearchInputDiv = styled.div`
+  width: 100%;
+  padding: 2rem;
+`;
+
+// interface SRIProps {
+// authorName: string;
+// slug: string;
+// }
+
+// const SearchResult: React.FC<SRIProps> = (authorName: string, slug: string) => {
+// return (
+// <SearchInputDiv>
+// <p>{authorName}</p>
+// <p>{slug}</p>
+// </SearchInputDiv>
+// );
+// };
+
+const changeWindowPopup = (
+  isVisible: boolean,
+  searchBar: RefObject<HTMLFormElement>,
+  searchWindowPopup: RefObject<HTMLDivElement>
+) => {
+  if (searchWindowPopup && searchWindowPopup.current) {
+    searchWindowPopup.current.style.visibility = isVisible
+      ? "visible"
+      : "hidden";
+    searchWindowPopup.current.style.opacity = isVisible ? "1" : "0";
+    searchWindowPopup.current.style.transform = isVisible
+      ? "scaleY(1)"
+      : "scaleY(0)";
+  }
+  if (searchBar && searchBar.current) {
+    searchBar.current.style.zIndex = isVisible ? "30" : "0";
+  }
+};
+
 // Interface
 interface IProps {}
 
 // Component
 const SearchBar: React.FC<IProps> = () => {
   const [searchInput, setSearchInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<userType[] | undefined>();
+  const [error, setError] = useState<string | undefined>();
+
+  const token = useSelector((state: IStore) => state.auth.token);
 
   const searchWindowPopup = useRef<HTMLDivElement>(null);
   const searchBar = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (searchInput.length > 0) {
-      if (searchWindowPopup && searchWindowPopup.current) {
-        searchWindowPopup.current.style.visibility = "visible";
-        searchWindowPopup.current.style.opacity = "1";
-        searchWindowPopup.current.style.transform = "scaleY(1)";
-      }
-      if (searchBar && searchBar.current) {
-        searchBar.current.style.zIndex = "30";
-      }
+      changeWindowPopup(true, searchBar, searchWindowPopup);
+      // if (searchWindowPopup && searchWindowPopup.current) {
+      // searchWindowPopup.current.style.visibility = "visible";
+      // searchWindowPopup.current.style.opacity = "1";
+      // searchWindowPopup.current.style.transform = "scaleY(1)";
+      // }
+      // if (searchBar && searchBar.current) {
+      // searchBar.current.style.zIndex = "30";
+      // }
       // setTimeout(() => {
       // }, 1000);
     } else {
-      if (searchWindowPopup && searchWindowPopup.current) {
-        searchWindowPopup.current.style.visibility = "hidden";
-        searchWindowPopup.current.style.opacity = "0";
-        searchWindowPopup.current.style.transform = "scaleY(0)";
-      }
-      if (searchBar && searchBar.current) {
-        searchBar.current.style.zIndex = "0";
-      }
+      changeWindowPopup(false, searchBar, searchWindowPopup);
+      // if (searchWindowPopup && searchWindowPopup.current) {
+      // searchWindowPopup.current.style.visibility = "hidden";
+      // searchWindowPopup.current.style.opacity = "0";
+      // searchWindowPopup.current.style.transform = "scaleY(0)";
+      // }
+      // if (searchBar && searchBar.current) {
+      // searchBar.current.style.zIndex = "0";
+      // }
       // setTimeout(() => {
       // }, 1000);
     }
+  }, [searchInput]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timeout = setTimeout(async () => {
+      console.log("Token: ", token);
+      console.log("True: ", searchInput.length > 0);
+      if (token && searchInput.length > 0) {
+        console.log("Starting searching...");
+        try {
+          const response = await Search.getSearch(token, searchInput);
+          console.log("Search response: ", response);
+          setSearchResults(response.data.data.users);
+        } catch (error) {
+          setError(error.message);
+        }
+      }
+      setIsLoading(false);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+      setSearchResults(undefined);
+    };
   }, [searchInput]);
 
   const onInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,9 +206,28 @@ const SearchBar: React.FC<IProps> = () => {
     setSearchInput("");
   };
 
+  let searchResultElement;
+  if (isLoading) {
+    searchResultElement = <Spinner />;
+  } else if (searchResults && searchResults.length > 0) {
+    searchResultElement = searchResults.map(result => (
+      <SearchInputDiv>
+        <p>{result.firstName}</p>
+        <p>{result.slug}</p>
+      </SearchInputDiv>
+    ));
+  }
+
   return (
     <>
-      {searchInput.length > 0 && <BackDrop toggleDrawer={() => {}} />}
+      <MessageModal
+        isError={true}
+        message={error}
+        clearError={() => setError(undefined)}
+      />
+      {searchInput.length > 0 && (
+        <BackDrop toggleDrawer={() => setSearchInput("")} />
+      )}
       <FormWrapper>
         <Form ref={searchBar}>
           <Button>
@@ -144,7 +242,9 @@ const SearchBar: React.FC<IProps> = () => {
             onChange={onInputChangeHandler}
           />
         </Form>
-        <FormResultModal ref={searchWindowPopup}>Searching</FormResultModal>
+        <FormResultModal ref={searchWindowPopup}>
+          {searchResultElement}
+        </FormResultModal>
       </FormWrapper>
     </>
   );

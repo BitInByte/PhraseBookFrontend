@@ -1,4 +1,4 @@
-import { phraseType, paginationState } from "../../../models/Phrase";
+import Phrase, { phraseType, paginationState } from "../../../models/Phrase";
 
 declare global {
   interface IAuthState {
@@ -10,7 +10,7 @@ declare global {
   }
 
   interface IPhraseState {
-    phrases: phraseType[] | null;
+    phrases: Phrase[] | null;
     error: string | null;
     loading: boolean;
     pagination: paginationState;

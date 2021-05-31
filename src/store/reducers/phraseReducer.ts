@@ -39,11 +39,17 @@ const phraseSuccess = (
 ): IPhraseState => {
   let phrases = null;
   let pagination = null;
-  if ("payload" in action) {
-    if ("phrases" in action.payload) phrases = action.payload.phrases;
-    if ("pagination" in action.payload) pagination = action.payload.pagination;
-    // console.log("Im inside it ===========", action.payload.phrases);
+  // if ("payload" in action) {
+  // if ("phrases" in action.payload) phrases = action.payload.phrases;
+  // if ("pagination" in action.payload) pagination = action.payload.pagination;
+  // // console.log("Im inside it ===========", action.payload.phrases);
+  // }
+
+  if (action.type === actionTypes.PHRASE_SUCCESS) {
+    phrases = action.payload.phrases;
+    pagination = action.payload.pagination;
   }
+
   return {
     ...state,
     phrases,
@@ -121,7 +127,8 @@ const phraseAction = (
   // let phraseIndex;
   if (phraseId && state.phrases) {
     const phraseIndex = state.phrases.findIndex(
-      e => phraseId && e._id.toString() === phraseId.toString()
+      // e => phraseId && e.id.toString() === phraseId.toString()
+      e => phraseId && e.getId() === phraseId.toString()
     );
 
     if (phraseIndex && state.phrases) {
@@ -143,20 +150,26 @@ const phraseAction = (
       // } else if (isLike) {
       if (isLike) {
         // state.phrases[phraseIndex].isLiked = !state.phrases[phraseIndex]
-        state.phrases[phraseIndex].isLiked = !phrase.isLiked;
+        // state.phrases[phraseIndex].isLiked = !phrase.isLiked;
+        state.phrases[phraseIndex].toggleIsLiked();
       } else {
         // state.phrases[phraseIndex].isShared = !state.phrases[phraseIndex]
-        state.phrases[phraseIndex].isShared = !phrase.isShared;
+        // state.phrases[phraseIndex].isShared = !phrase.isShared;
+        state.phrases[phraseIndex].toggleIsShared();
       }
 
       if (
-        !phrase.isLiked &&
-        !phrase.isShared &&
-        !phrase.isPhraseAuthorOnFriendsList
+        // !phrase.isLiked &&
+        !phrase.getIsLiked() &&
+        // !phrase.isShared &&
+        !phrase.getIsShared() &&
+        // !phrase.isPhraseAuthorOnFriendsList
+        !phrase.getIsPhraseAuthorOnFriendsList()
       ) {
         // Delete this phrase from the list
         state.phrases = state.phrases.filter(
-          phrase => phraseId && phrase._id.toString() !== phraseId.toString()
+          // phrase => phraseId && phrase.id.toString() !== phraseId.toString()
+          phrase => phraseId && phrase.getId() !== phraseId.toString()
         );
       }
     }

@@ -1,19 +1,22 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { log } from "util";
 import axiosToken from "../utils/axios-instance";
+
+export type userType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  isFriend: boolean;
+  slug: string;
+  _id: string;
+  authorName: string;
+};
 
 type loginResponse = {
   token: string;
   message: string;
   exp: number;
   data: {
-    user: {
-      authorName: string;
-      id: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-    };
+    user: userType;
   };
 };
 
@@ -32,35 +35,30 @@ type signupResponse = {
   };
 };
 
-type loginReturn = {
-  token: string;
-  exp: number;
-};
+// type loginReturn = {
+// token: string;
+// exp: number;
+// data: {
+// user: userType,
+// }
+// };
 
 type signUpReturn = {
   token: string;
   exp: number;
 };
 
-type userSettingsReturn = {
+interface userSettingsReturn {
   message: string;
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-};
+  user: userType;
+}
 
-type userPatchSettingsReturn = {
+interface userPatchSettingsReturn {
   status: string;
   data: {
-    user: {
-      firstName: string;
-      lastName: string;
-      email: string;
-    };
+    user: userType;
   };
-};
+}
 
 type userPatchBody = {
   firstName: string;
@@ -71,23 +69,85 @@ type userPatchBody = {
 };
 
 class User {
-  private userId: string;
+  private id: string;
   private email: string;
   // private password;
   private firstName: string;
   private lastName: string;
+  private authorName: string;
+  private isFriend: boolean;
+  private slug: string;
+  // private initials: string;
 
-  constructor(email = "", firstName = "", lastName = "") {
+  constructor(
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    authorName: string,
+    isFriend: boolean,
+    slug: string
+  ) {
+    this.id = id;
     this.email = email;
-    this.userId = "";
+    // this.userId = "";
     this.firstName = firstName;
     this.lastName = lastName;
+    this.authorName = authorName;
+    this.isFriend = isFriend;
+    this.slug = slug;
+    // this.initials = firstName.split("")[0] + lastName.split("")[0];
+  }
+
+  // get getId() {
+  // return this.id;
+  // }
+
+  // get getFirstName() {
+  // return this.firstName;
+  // }
+
+  public getId() {
+    return this.id;
+  }
+
+  public getEmail() {
+    return this.email;
+  }
+
+  public getFirstName() {
+    return this.firstName;
+  }
+  public getLastName() {
+    return this.lastName;
+  }
+
+  public getAuthorName() {
+    return this.authorName;
+  }
+
+  public getIsFriend() {
+    return this.isFriend;
+  }
+
+  public getSlug() {
+    return this.slug;
+  }
+
+  public getInitials() {
+    return (
+      this.firstName.split("")[0] + this.lastName.split("")[0]
+    ).toUpperCase();
   }
 
   // public login(password: string): AxiosResponse<loginResponse> {}
   // public async login(password: string): Promise<loginReturn | string>  {
-  public async login(password: string): Promise<loginReturn | string> {
-    const email = this.email;
+  // static async login(email: string, password: string): Promise<loginReturn | string> {
+  static async login(
+    email: string,
+    password: string
+  ): Promise<AxiosResponse<loginResponse>> {
+    // const email = this.email;
     let response: AxiosResponse<loginResponse>;
     try {
       response = await axios.post(
@@ -97,77 +157,104 @@ class User {
           password,
         }
       );
-      this.userId = response.data.data.user.id;
-      this.firstName = response.data.data.user.firstName;
-      this.lastName = response.data.data.user.lastName;
-      console.log("User Response: ", response);
+      // this.userId = response.data.data.user.id;
+      // this.firstName = response.data.data.user.firstName;
+      // this.lastName = response.data.data.user.lastName;
+      // console.log("User Response: ", response);
 
-      return {
-        token: response.data.token,
-        exp: response.data.exp,
-      };
+      // return {
+      // token: response.data.token,
+      // exp: response.data.exp,
+      // };
+      return response;
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
       console.log(error.response);
       // Send the error
-      return error.response!.data.message;
+      // return error.response!.data.message;
+      if (error.response) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error(error.message);
+      }
     }
   }
 
-  public async signUp(password: string): Promise<signUpReturn | string> {
-    let response: AxiosResponse<signupResponse>;
+  static async signUp(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ): Promise<AxiosResponse<loginResponse>> {
+    // let response: AxiosResponse<signupResponse>;
+    // let response: AxiosResponse<loginResponse>;
     try {
-      response = await axios.post(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/auth/signup`,
         {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
+          firstName,
+          lastName,
+          email,
           password,
         }
       );
-      this.userId = response.data.data.user.id;
-      this.firstName = response.data.data.user.firstName;
-      this.lastName = response.data.data.user.lastName;
-      return {
-        token: response.data.token,
-        exp: response.data.exp,
-      };
+      // this.userId = response.data.data.user.id;
+      // this.firstName = response.data.data.user.firstName;
+      // this.lastName = response.data.data.user.lastName;
+      // return {
+      // token: response.data.token,
+      // exp: response.data.exp,
+      // };
+      return response;
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
-      return error.response!.data.message;
+      // return error.response!.data.message;
+      if (error.response) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(error.message);
     }
   }
 
-  public static async fetchUserSettings(token: string) {
-    let response: AxiosResponse<userSettingsReturn>;
-    let newUser;
+  static async fetchUserSettings(
+    token: string
+  ): Promise<AxiosResponse<userSettingsReturn>> {
+    // let response: AxiosResponse<userSettingsReturn>;
+    // let newUser;
     try {
-      response = await axiosToken(token).get("/user/me");
-      newUser = new User(
-        response.data.user.email,
-        response.data.user.firstName,
-        response.data.user.lastName
-      );
-      return newUser;
+      const response = await axiosToken(token).get("/user/me");
+      return response;
+      // newUser = new User(
+      // response.data.user.email,
+      // response.data.user.firstName,
+      // response.data.user.lastName
+      // );
+      // return newUser;
       // console.log(response);
     } catch (e) {
       console.log(e);
       const error = e as AxiosError<{ message: string }>;
-      return error.response!.data.message;
+      // return error.response!.data.message;
+      if (error.response) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(error.message);
     }
   }
 
-  public async patchUserSettings(
+  static async patchUserSettings(
     token: string,
     oldPassword = "",
-    newPassword = ""
-  ) {
-    let response: AxiosResponse<userPatchSettingsReturn>;
+    newPassword = "",
+    firstName: string,
+    lastName: string,
+    email: string
+  ): Promise<AxiosResponse<userPatchSettingsReturn>> {
+    // let response: AxiosResponse<userPatchSettingsReturn>;
     const bodyData: userPatchBody = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      email: this.email,
+      firstName,
+      lastName,
+      email,
     };
     // bodyData.firstName = this.firstName;
     // bodyData.lastName = this.lastName;
@@ -175,25 +262,16 @@ class User {
     if (oldPassword.length > 0) bodyData.oldPassword = oldPassword;
     if (newPassword.length > 0) bodyData.newPassword = newPassword;
     try {
-      response = await axiosToken(token).patch("/user/me", bodyData);
+      const response = await axiosToken(token).patch("/user/me", bodyData);
       return response;
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
-      return error.response!.data.message;
+      // return error.response!.data.message;
+      if (error.response) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(error.message);
     }
-  }
-
-  public getUserId() {
-    return this.userId;
-  }
-  public getFirstName() {
-    return this.firstName;
-  }
-  public getLastName() {
-    return this.lastName;
-  }
-  public getEmail() {
-    return this.email;
   }
 }
 

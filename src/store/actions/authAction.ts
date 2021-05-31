@@ -82,53 +82,85 @@ export const login = ({ email, password }: loginBody): AppThunk => {
 
     console.log("Dispatched");
 
-    const loginUser = new User(email);
+    // const loginUser = new User(email);
 
-    let response;
-    response = await loginUser.login(password);
+    // let response;
+    // response = await loginUser.login(password);
+    try {
+      const response = await User.login(email, password);
 
-    console.log("@@@@@@@RESPONSE");
-    console.log(response);
+      console.log("@@@@@@@RESPONSE");
+      console.log(response);
+
+      const {
+        _id,
+        firstName,
+        lastName,
+        authorName,
+        isFriend,
+        slug,
+      } = response.data.data.user;
+
+      const loginUser = new User(
+        _id,
+        email,
+        firstName,
+        lastName,
+        authorName,
+        isFriend,
+        slug
+      );
+
+      addLocalStorageUserInformation(
+        response.data.token,
+        response.data.exp,
+        loginUser.getId(),
+        loginUser.getInitials()
+      );
+      dispatch(authSuccess(response.data.token, loginUser.getInitials()));
+    } catch (error) {
+      dispatch(authError(error.message));
+    }
 
     // if (loginUser.getUserId()) {
-    if (typeof response === "object") {
-      console.log("00000000DATE RECEIVED");
-      // console.log(response.exp.toString());
-      console.log(new Date(response.exp * 1000));
-      console.log(Date.now());
-      // Store token and exp date on localStorage
-      // localStorage.setItem("token", response.token);
-      // localStorage.setItem(
-      //   "expirationDate",
-      //   new Date(response.exp * 1000).toString()
-      // );
-      // localStorage.setItem("userId", loginUser.getUserId());
-      // Dispatch action
-      console.log("Success");
-      console.log(
-        loginUser.getFirstName().split("")[0] +
-          loginUser.getLastName().split("")[0]
-      );
-      const initials = (
-        loginUser.getFirstName().split("")[0] +
-        loginUser.getLastName().split("")[0]
-      ).toUpperCase();
-      // localStorage.setItem("userInitials", initials);
-      addLocalStorageUserInformation(
-        response.token,
-        response.exp,
-        loginUser.getUserId(),
-        initials
-      );
+    // if (typeof response === "object") {
+    // console.log("00000000DATE RECEIVED");
+    // // console.log(response.exp.toString());
+    // console.log(new Date(response.exp * 1000));
+    // console.log(Date.now());
+    // Store token and exp date on localStorage
+    // localStorage.setItem("token", response.token);
+    // localStorage.setItem(
+    //   "expirationDate",
+    //   new Date(response.exp * 1000).toString()
+    // );
+    // localStorage.setItem("userId", loginUser.getUserId());
+    // Dispatch action
+    // console.log("Success");
+    // console.log(
+    // loginUser.getFirstName().split("")[0] +
+    // loginUser.getLastName().split("")[0]
+    // );
+    // const initials = (
+    // loginUser.getFirstName().split("")[0] +
+    // loginUser.getLastName().split("")[0]
+    // ).toUpperCase();
+    // localStorage.setItem("userInitials", initials);
+    // addLocalStorageUserInformation(
+    // response.token,
+    // response.exp,
+    // loginUser.getUserId(),
+    // initials
+    // );
 
-      dispatch(authSuccess(response.token, initials));
-      // }
-    } else if (typeof response === "string") {
-      // Dispatch action
-      console.log("Error");
-      console.log(response);
-      dispatch(authError(response));
-    }
+    // dispatch(authSuccess(response.token, initials));
+    // }
+    // } else if (typeof response === "string") {
+    // // Dispatch action
+    // console.log("Error");
+    // console.log(response);
+    // dispatch(authError(response));
+    // }
     // }
 
     // Fetch data from the server
@@ -215,37 +247,66 @@ export const signUp = ({
   return async dispatch => {
     //  Fires up the loading
     dispatch(authStart());
-    //  Try to signUp
-    const newUser = new User(email, firstName, lastName);
-    let response;
-    response = await newUser.signUp(password);
-    if (typeof response === "object") {
-      // localStorage.setItem("token", response.token);
-      // localStorage.setItem(
-      //     "expirationDate",
-      //     new Date(response.exp * 1000).toString()
-      // );
-      // localStorage.setItem("userId", loginUser.getUserId());
-      // Dispatch action
-      // console.log("Success");
-      // console.log(
-      //     loginUser.getFirstName().split("")[0] +
-      //     loginUser.getLastName().split("")[0]
-      // );
-      const initials = (
-        newUser.getFirstName().split("")[0] + newUser.getLastName().split("")[0]
-      ).toUpperCase();
-      // localStorage.setItem("userInitials", initials);
-      addLocalStorageUserInformation(
-        response.token,
-        response.exp,
-        newUser.getUserId(),
-        initials
+    try {
+      const response = await User.signUp(email, password, firstName, lastName);
+      const {
+        _id,
+        // firstName,
+        // lastName,
+        authorName,
+        isFriend,
+        slug,
+      } = response.data.data.user;
+
+      const loginUser = new User(
+        _id,
+        email,
+        firstName,
+        lastName,
+        authorName,
+        isFriend,
+        slug
       );
-      dispatch(authSuccess(response.token, initials));
-    } else if (typeof response === "string") {
-      dispatch(authError(response));
-    }
+
+      addLocalStorageUserInformation(
+        response.data.token,
+        response.data.exp,
+        loginUser.getId(),
+        loginUser.getInitials()
+      );
+      dispatch(authSuccess(response.data.token, loginUser.getInitials()));
+    } catch (error) {}
+    //  Try to signUp
+    // const newUser = new User(email, firstName, lastName);
+    // let response;
+    // response = await newUser.signUp(password);
+    // if (typeof response === "object") {
+    // localStorage.setItem("token", response.token);
+    // localStorage.setItem(
+    //     "expirationDate",
+    //     new Date(response.exp * 1000).toString()
+    // );
+    // localStorage.setItem("userId", loginUser.getUserId());
+    // Dispatch action
+    // console.log("Success");
+    // console.log(
+    //     loginUser.getFirstName().split("")[0] +
+    //     loginUser.getLastName().split("")[0]
+    // );
+    // const initials = (
+    // newUser.getFirstName().split("")[0] + newUser.getLastName().split("")[0]
+    // ).toUpperCase();
+    // // localStorage.setItem("userInitials", initials);
+    // addLocalStorageUserInformation(
+    // response.token,
+    // response.exp,
+    // newUser.getUserId(),
+    // initials
+    // );
+    // dispatch(authSuccess(response.token, initials));
+    // } else if (typeof response === "string") {
+    // dispatch(authError(response));
+    // }
   };
 };
 
