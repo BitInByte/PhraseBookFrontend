@@ -1,4 +1,5 @@
 import Phrase, { phraseType, paginationState } from "../../../models/Phrase";
+import User from "../../../models/User";
 
 declare global {
   interface IAuthState {
@@ -14,5 +15,11 @@ declare global {
     error: string | null;
     loading: boolean;
     pagination: paginationState;
+  }
+
+  interface IUserState {
+    user: User | null;
+    error: string | null;
+    loading: boolean;
   }
 }

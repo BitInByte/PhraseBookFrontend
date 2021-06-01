@@ -8,8 +8,8 @@ import PropTypes from "prop-types";
 // Import components
 import H1 from "../components/ui/Typography/H1";
 import H3 from "../components/ui/Typography/H3";
-import RegisterForm from "../components/auth/Register/RegisterForm";
-import MessageModal from "../components/ui/MessageModal/MessageModal";
+import RegisterForm from "../components/auth/RegisterForm";
+import MessageModal from "../components/ui/MessageModal";
 // import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
 
 // Styles

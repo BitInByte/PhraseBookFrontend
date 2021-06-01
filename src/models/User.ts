@@ -9,6 +9,7 @@ export type userType = {
   slug: string;
   _id: string;
   authorName: string;
+  isLoggedInUser: string;
 };
 
 type loginResponse = {
@@ -20,20 +21,20 @@ type loginResponse = {
   };
 };
 
-type signupResponse = {
-  token: string;
-  message: string;
-  exp: number;
-  data: {
-    user: {
-      authorName: string;
-      id: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-    };
-  };
-};
+// type signupResponse = {
+// token: string;
+// message: string;
+// exp: number;
+// data: {
+// user: {
+// authorName: string;
+// id: string;
+// firstName: string;
+// lastName: string;
+// email: string;
+// };
+// };
+// };
 
 // type loginReturn = {
 // token: string;
@@ -43,10 +44,10 @@ type signupResponse = {
 // }
 // };
 
-type signUpReturn = {
-  token: string;
-  exp: number;
-};
+// type signUpReturn = {
+// token: string;
+// exp: number;
+// };
 
 interface userSettingsReturn {
   message: string;
@@ -77,6 +78,7 @@ class User {
   private authorName: string;
   private isFriend: boolean;
   private slug: string;
+  private isLoggedInUser: string;
   // private initials: string;
 
   constructor(
@@ -86,7 +88,8 @@ class User {
     lastName: string,
     authorName: string,
     isFriend: boolean,
-    slug: string
+    slug: string,
+    isLoggedInUser: string
   ) {
     this.id = id;
     this.email = email;
@@ -96,6 +99,7 @@ class User {
     this.authorName = authorName;
     this.isFriend = isFriend;
     this.slug = slug;
+    this.isLoggedInUser = isLoggedInUser;
     // this.initials = firstName.split("")[0] + lastName.split("")[0];
   }
 
@@ -106,6 +110,10 @@ class User {
   // get getFirstName() {
   // return this.firstName;
   // }
+
+  public toggleIsFriend() {
+    this.isFriend = !this.isFriend;
+  }
 
   public getId() {
     return this.id;
@@ -131,13 +139,17 @@ class User {
   }
 
   public getSlug() {
-    return this.slug;
+    return "@" + this.slug;
   }
 
   public getInitials() {
     return (
       this.firstName.split("")[0] + this.lastName.split("")[0]
     ).toUpperCase();
+  }
+
+  public getIsLoggedInUser() {
+    return this.isLoggedInUser;
   }
 
   // public login(password: string): AxiosResponse<loginResponse> {}
@@ -266,6 +278,22 @@ class User {
       return response;
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
+      // return error.response!.data.message;
+      if (error.response) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(error.message);
+    }
+  }
+
+  static async followHandler(token: string, uid: string) {
+    try {
+      const response = await axiosToken(token).post(
+        `/user/followhandler/${uid}`
+      );
+      return response;
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
       // return error.response!.data.message;
       if (error.response) {
         throw new Error(error.response.data.message);

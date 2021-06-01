@@ -4,7 +4,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 // Import components
-import Spinner from "../ui/Spinner/Spinner";
+import Spinner from "./ui/Spinner";
 
 // Styles
 const InfiniteLoadingStyles = styled.div`

@@ -61,6 +61,15 @@ const phraseSuccess = (
   };
 };
 
+const phraseClear = (
+  state: IPhraseState,
+  action: phraseActions
+): IPhraseState => {
+  return {
+    ...initialState,
+  };
+};
+
 const phraseIncrement = (
   state: IPhraseState,
   action: phraseActions
@@ -124,6 +133,9 @@ const phraseAction = (
     }
   }
 
+  console.log("Is Liked: ", isLike);
+  console.log("Phrase Id: ", phraseId);
+
   // let phraseIndex;
   if (phraseId && state.phrases) {
     const phraseIndex = state.phrases.findIndex(
@@ -158,20 +170,20 @@ const phraseAction = (
         state.phrases[phraseIndex].toggleIsShared();
       }
 
-      if (
-        // !phrase.isLiked &&
-        !phrase.getIsLiked() &&
-        // !phrase.isShared &&
-        !phrase.getIsShared() &&
-        // !phrase.isPhraseAuthorOnFriendsList
-        !phrase.getIsPhraseAuthorOnFriendsList()
-      ) {
-        // Delete this phrase from the list
-        state.phrases = state.phrases.filter(
-          // phrase => phraseId && phrase.id.toString() !== phraseId.toString()
-          phrase => phraseId && phrase.getId() !== phraseId.toString()
-        );
-      }
+      // if (
+      // // !phrase.isLiked &&
+      // !phrase.getIsLiked() &&
+      // // !phrase.isShared &&
+      // !phrase.getIsShared() &&
+      // // !phrase.isPhraseAuthorOnFriendsList
+      // !phrase.getIsPhraseAuthorOnFriendsList()
+      // ) {
+      // // Delete this phrase from the list
+      // state.phrases = state.phrases.filter(
+      // // phrase => phraseId && phrase.id.toString() !== phraseId.toString()
+      // phrase => phraseId && phrase.getId() !== phraseId.toString()
+      // );
+      // }
     }
   }
 
@@ -201,7 +213,6 @@ const clearError = (state: IPhraseState, _: phraseActions): IPhraseState => {
 };
 
 // const phraseShare = (state: IPhraseState, action: phraseActions) => {};
-
 const phraseReducer = (state = initialState, action: phraseActions) => {
   switch (action.type) {
     case actionTypes.PHRASE_START:
@@ -210,6 +221,8 @@ const phraseReducer = (state = initialState, action: phraseActions) => {
       return phraseIncrementStart(state, action);
     case actionTypes.PHRASE_SUCCESS:
       return phraseSuccess(state, action);
+    case actionTypes.PHRASE_CLEAR:
+      return phraseClear(state, action);
     case actionTypes.PHRASE_ACTION:
       return phraseAction(state, action);
     case actionTypes.PHRASE_ERROR:

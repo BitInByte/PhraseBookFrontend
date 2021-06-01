@@ -1,9 +1,11 @@
 import { AxiosError, AxiosResponse } from "axios";
-import Author, { authorType } from "./Author";
+// import Author, { authorType } from "./Author";
+import Author, { userType } from "./User";
 import axiosInstance from "../utils/axios-instance";
 
 type phraseType = {
-  author: authorType;
+  // author: authorType;
+  author: userType;
   countLikes: number;
   countShares: number;
   createdAt: string;
@@ -27,6 +29,7 @@ export type paginationState = pagination & {
 type phraseResponse = {
   data: {
     phrases: [phraseType];
+    user: userType;
   };
   pagination: pagination;
 };
@@ -50,7 +53,8 @@ class Phrase {
 
   constructor(
     _id: string,
-    author: authorType,
+    // author: authorType,
+    author: userType,
     countLikes: number,
     countShares: number,
     createdAt: string,
@@ -61,7 +65,17 @@ class Phrase {
     isPhraseAuthorOnFriendsList: boolean
   ) {
     this.id = _id;
-    this.author = new Author(author._id, author.firstName, author.lastName);
+    // this.author = new Author(author._id, author.firstName, author.lastName);
+    this.author = new Author(
+      author._id,
+      author.email,
+      author.firstName,
+      author.lastName,
+      author.authorName,
+      author.isFriend,
+      author.slug,
+      author.isLoggedInUser
+    );
     this.countLikes = countLikes;
     this.countShares = countShares;
     this.createdAt = createdAt;
@@ -129,12 +143,18 @@ class Phrase {
   }
 
   // static async getPhrases(token: string, page = 1) {
-  static async getPhrases(token: string, page = 1) {
+  static async getPhrases(uid: string | undefined, token: string, page = 1) {
     let response: AxiosResponse<phraseResponse>;
     try {
-      response = await axiosInstance(token).get(
-        `${process.env.REACT_APP_API_URL}/timeline?page=${page}&limit=4`
-      );
+      if (uid) {
+        response = await axiosInstance(token).get(
+          `${process.env.REACT_APP_API_URL}/phrase/${uid}?page=${page}&limit=4`
+        );
+      } else {
+        response = await axiosInstance(token).get(
+          `${process.env.REACT_APP_API_URL}/timeline?page=${page}&limit=4`
+        );
+      }
       console.log("Phrase Response: ", response);
       return response.data;
     } catch (err) {

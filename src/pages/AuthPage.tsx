@@ -5,13 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 
 // Import components
-import LoginForm from "../components/auth/Login/LoginForm";
-import RegisterForm from "../components/auth/Register/RegisterForm";
-import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
-import MessageModal from "../components/ui/MessageModal/MessageModal";
-import Spinner from "../components/ui/Spinner/Spinner";
-import { finishSession } from "../store/actions/authAction";
-import actionTypes from "../store/actions/actionTypes";
+import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
+import SectionWrapper from "../components/ui/SectionWrapper";
+import MessageModal from "../components/ui/MessageModal";
+// import Spinner from "../components/ui/Spinner";
+// import { finishSession } from "../store/actions/authAction";
+// import actionTypes from "../store/actions/actionTypes";
 
 // Styles
 // const AuthWrapper = styled.div`

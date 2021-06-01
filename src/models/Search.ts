@@ -9,14 +9,26 @@ export type searchResponse = {
 };
 
 class Search {
+  private id: string;
   private slug: string;
+  private authorName: string;
 
-  constructor(slug: string) {
+  constructor(id: string, slug: string, firstName: string, lastName: string) {
+    this.id = id;
     this.slug = slug;
+    this.authorName = firstName + " " + lastName;
+  }
+
+  public getId() {
+    return this.id;
   }
 
   public getSlug() {
     return this.slug;
+  }
+
+  public getAuthorName() {
+    return this.authorName;
   }
 
   static async getSearch(

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 // Import components
-import BackDrop from "../BackDrop/BackDrop";
+import BackDrop from "./BackDrop";
 import { CSSTransition } from "react-transition-group";
 
 // Styles

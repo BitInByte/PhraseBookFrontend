@@ -5,22 +5,28 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import PhraseModel from "../models/Phrase";
+import User from "../models/User";
 import {
   getPhrases,
   createPhrase,
   phraseErrorClear,
+  phraseClear,
 } from "../store/actions/phraseAction";
 import actionTypes from "../store/actions/actionTypes";
 
 // Import components
-import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
-import Phrase from "../components/Phrase/Phrase";
-import Spinner from "../components/ui/Spinner/Spinner";
-import MessageModal from "../components/ui/MessageModal/MessageModal";
+import SectionWrapper from "../components/ui/SectionWrapper";
+import Phrase from "../components/Phrase";
+import Spinner from "../components/ui/Spinner";
+import MessageModal from "../components/ui/MessageModal";
 // import InputModal from "../components/ui/InputModal/InputModal";
-import Card from "../components/ui/Card/Card";
-import AddNewPhrase from "../components/AddNewPhrase/AddNewPhrase";
-import InfiniteLoading from "../components/InfiniteLoading/InfiniteLoading";
+import Card from "../components/ui/Card";
+import AddNewPhrase from "../components/AddNewPhrase";
+import InfiniteLoading from "../components/InfiniteLoading";
+import H2 from "../components/ui/Typography/H2";
+import Button from "../components/ui/Button";
+import { useParams } from "react-router-dom";
+import { userFollowHandler } from "../store/actions/userAction";
 
 // Styles
 // const AddPhraseStyles = styled.button`
@@ -39,17 +45,40 @@ import InfiniteLoading from "../components/InfiniteLoading/InfiniteLoading";
 // background-color: ${props => props.theme.colors.blue};
 // }
 // `;
+const UserInfo = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  & div {
+    padding: 0 0.3rem;
+    margin-right: auto;
+    width: 35rem;
+  }
+`;
+
+const UserText = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 // Interface
 interface IProps {}
 
 // Component
 const TimelinePage: React.FC<IProps> = () => {
+  console.log("RENDERINGGGGG");
+  console.log("RENDERINGGGGG");
+  console.log("RENDERINGGGGG");
+  console.log("RENDERINGGGGG");
+  const { uid } = useParams<{ uid: string }>();
+
   const [responseMessage, setResponseMessage] = useState<null | string>(null);
   const [newPhraseInput, setNewPhraseInput] = useState("");
 
   const auth: IAuthState = useSelector((state: IStore) => state.auth);
   const phrases: IPhraseState = useSelector((state: IStore) => state.phrases);
+  const user: User | null = useSelector((state: IStore) => state.user.user);
 
   // if (phrases && phrases.phrases) {
   // setPhraseTotal(phrases.phrases.length);
@@ -69,12 +98,19 @@ const TimelinePage: React.FC<IProps> = () => {
     // const getPhrasesHandler = async () => {
     // const phrase = new PhraseModel();
     // await phrases.getPhrases(auth.token!);
-    console.log("token: ", auth.token!);
+    // console.log("token: ", auth.token!);
     // dispatch(getPhrases(auth.token!));
-    dispatch(getPhrases());
+    // if (uid) {
+    dispatch(getPhrases(uid));
+    // } else {
+    // dispatch(getPhrases());
+    // }
     // };
     // getPhrasesHandler();
-  }, []);
+    return () => {
+      dispatch(phraseClear());
+    };
+  }, [uid, dispatch]);
 
   console.log("====Phrases: ", phrases);
   console.log("Loading: ", phrases.loading);
@@ -83,31 +119,53 @@ const TimelinePage: React.FC<IProps> = () => {
     console.log(phraseId);
     // const phrase = new PhraseModel();
 
-    let response;
-    if (auth.token) {
-      if (isLike) {
-        response = await PhraseModel.likePhrase(auth.token, phraseId);
-        console.log("Response: ", response);
-      } else if (!isLike) {
-        response = await PhraseModel.sharePhrase(auth.token, phraseId);
+    // let response;
+    // if (auth.token) {
+    // if (isLike) {
+    // response = await PhraseModel.likePhrase(auth.token, phraseId);
+    // console.log("Response: ", response);
+    // } else if (!isLike) {
+    // response = await PhraseModel.sharePhrase(auth.token, phraseId);
+    // }
+    // }
+
+    try {
+      if (auth.token) {
+        let response;
+        if (isLike) {
+          response = await PhraseModel.likePhrase(auth.token, phraseId);
+          console.log("Response: ", response);
+        } else if (!isLike) {
+          response = await PhraseModel.sharePhrase(auth.token, phraseId);
+        }
       }
+      dispatch({
+        type: actionTypes.PHRASE_ACTION,
+        payload: { phraseId, isLike },
+      });
+      // setResponseMessage(response.data.message);
+    } catch (error) {
+      dispatch({
+        type: actionTypes.PHRASE_ERROR,
+        payload: { error: error.message },
+      });
     }
 
-    if (response && "status" in response) {
-      if (response.status === 200) {
-        console.log("Dispatching like");
-        dispatch({
-          type: actionTypes.PHRASE_ACTION,
-          payload: { phraseId, isLike },
-        });
-        setResponseMessage(response.data.message);
-      } else {
-        dispatch({
-          type: actionTypes.PHRASE_ERROR,
-          payload: { error: response.data.message },
-        });
-      }
-    }
+    // if (response && "status" in response) {
+    // if (response.status === 200) {
+    // console.log("Dispatching like");
+    // dispatch({
+    // type: actionTypes.PHRASE_ACTION,
+    // payload: { phraseId, isLike },
+    // });
+    // // setResponseMessage(response.data.message);
+    // } else {
+    // dispatch({
+    // type: actionTypes.PHRASE_ERROR,
+    // payload: { error: response.data.message },
+    // });
+    // }
+    // }
   };
 
   // const toggleInputModal = () => {
@@ -143,6 +201,7 @@ const TimelinePage: React.FC<IProps> = () => {
     console.log("Changing element ====");
     element = phrases.phrases.map(phrase => (
       <Phrase
+        id={phrase.getAuthor().getId()}
         // key={phrase.id}
         key={phrase.getId()}
         // phrase={phrase.phrase}
@@ -167,8 +226,10 @@ const TimelinePage: React.FC<IProps> = () => {
         }}
       />
     ));
-  } else if (phrases && phrases.phrases && !phrases.phrases.length) {
+  } else if (phrases && phrases.phrases && !phrases.phrases.length && !uid) {
     element = <p>There is nothing to display on the feed!</p>;
+  } else if (phrases && phrases.phrases && !phrases.phrases.length && uid) {
+    element = <p>This author have no phrases to show yet!</p>;
   } else {
     element = <Spinner />;
   }
@@ -195,15 +256,57 @@ const TimelinePage: React.FC<IProps> = () => {
     setNewPhraseInput("");
   };
 
-  const addNewPhraseElement = (
-    <Card>
-      <AddNewPhrase
-        value={newPhraseInput}
-        onAddNewPhraseHandler={onNewPhraseInputChangeHandler}
-        createNewPhraseHandler={createNewPhraseHandler}
-      />
-    </Card>
-  );
+  const followHandler = async (user: User) => {
+    try {
+      if (auth.token) {
+        const response = await User.followHandler(auth.token, user.getId());
+        setResponseMessage(response.data.message);
+        // user.toggleIsFriend();
+        dispatch(userFollowHandler());
+      }
+    } catch (error) {}
+  };
+
+  let firstElement;
+
+  if (uid && user) {
+    firstElement = (
+      <Card>
+        <UserInfo>
+          <UserText>
+            <H2>{user.getAuthorName()}</H2>
+            <p>{user.getSlug()}</p>
+          </UserText>
+          {!user.getIsLoggedInUser() ? (
+            <Button
+              text={`${user.getIsFriend() ? "Remove" : "Add"} Author`}
+              isFilled={user.getIsFriend() ? true : false}
+              isDisabled={false}
+              type="button"
+              buttonPushHandler={() => {
+                followHandler(user);
+              }}
+            />
+          ) : null}
+        </UserInfo>
+      </Card>
+    );
+    // firstElement = (
+    // <Card>
+    // </Card>
+    // )
+  } else {
+    // const addNewPhraseElement = (
+    firstElement = (
+      <Card>
+        <AddNewPhrase
+          value={newPhraseInput}
+          onAddNewPhraseHandler={onNewPhraseInputChangeHandler}
+          createNewPhraseHandler={createNewPhraseHandler}
+        />
+      </Card>
+    );
+  }
 
   const infiniteLoadingHandler = () => {
     console.log("Loading new values!!!");
@@ -215,7 +318,7 @@ const TimelinePage: React.FC<IProps> = () => {
       if (auth.token && phrases.pagination && phrases.pagination.page) {
         console.log("Dispatching=========");
         // dispatch(getPhrases(auth.token, phrases.pagination.page + 1, true));
-        dispatch(getPhrases(phrases.pagination.page + 1, true));
+        dispatch(getPhrases(uid, phrases.pagination.page + 1, true));
       }
     }
   };
@@ -253,7 +356,10 @@ const TimelinePage: React.FC<IProps> = () => {
         //  messageModalElement
       }
       <SectionWrapper>
-        {addNewPhraseElement}
+        {
+          // addNewPhraseElement
+          firstElement
+        }
         <InfiniteLoading
           loading={phrases.pagination.loading}
           onEndReached={infiniteLoadingHandler}>

@@ -4,13 +4,13 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 // Import components
-import RegisterForm from "../components/auth/Register/RegisterForm";
-import SectionWrapper from "../components/ui/SectionWrapper/SectionWrapper";
-import UserSettingsForm from "../components/auth/UserSettings/UserSettingsForm";
+// import RegisterForm from "../components/auth/Register/RegisterForm";
+import SectionWrapper from "../components/ui/SectionWrapper";
+import UserSettingsForm from "../components/auth/UserSettingsForm";
 import { useDispatch, useSelector } from "react-redux";
-import actionTypes from "../store/actions/actionTypes";
-import Spinner from "../components/ui/Spinner/Spinner";
-import MessageModal from "../components/ui/MessageModal/MessageModal";
+// import actionTypes from "../store/actions/actionTypes";
+import Spinner from "../components/ui/Spinner";
+import MessageModal from "../components/ui/MessageModal";
 import User from "../models/User";
 
 // Styles
@@ -50,11 +50,11 @@ const UserSettingsPage: React.FC<IProps> = () => {
             lastName: response.data.user.lastName,
             email: response.data.user.email,
           });
-
-          setIsLoading(false);
         } catch (error) {
-          setIsErrorMessage(error);
+          // if(error.)
+          setIsErrorMessage(error.message);
         }
+        setIsLoading(false);
         // if (newUser instanceof User) {
         // setUserInformation({
         // firstName: newUser.getFirstName(),

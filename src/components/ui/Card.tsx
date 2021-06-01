@@ -16,7 +16,7 @@ const CardContainer = styled.div`
 
 // Interface
 interface IProps {
-  children: JSX.Element[] | JSX.Element;
+  children: JSX.Element | (JSX.Element | null)[] | JSX.Element[];
 }
 
 // Component

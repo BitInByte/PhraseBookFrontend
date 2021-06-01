@@ -15,6 +15,10 @@ export type phraseSuccessAction = {
   payload: { phrases: Phrase[]; pagination: pagination };
 };
 
+export type phraseClearAction = {
+  type: actionTypes.PHRASE_CLEAR;
+};
+
 export type phraseIncrementSuccessAction = {
   type: actionTypes.PHRASE_INCREMENT_SUCCESS;
   // payload: { phrases: [phraseType]; pagination: pagination };
@@ -50,6 +54,7 @@ type phraseActions =
   | phraseError
   | phraseAddNewSuccess
   | phraseIncrementSuccessAction
-  | phraseIncrementStartAction;
+  | phraseIncrementStartAction
+  | phraseClearAction;
 
 export default phraseActions;

@@ -99,6 +99,7 @@ export const login = ({ email, password }: loginBody): AppThunk => {
         authorName,
         isFriend,
         slug,
+        isLoggedInUser,
       } = response.data.data.user;
 
       const loginUser = new User(
@@ -108,7 +109,8 @@ export const login = ({ email, password }: loginBody): AppThunk => {
         lastName,
         authorName,
         isFriend,
-        slug
+        slug,
+        isLoggedInUser
       );
 
       addLocalStorageUserInformation(
@@ -256,6 +258,7 @@ export const signUp = ({
         authorName,
         isFriend,
         slug,
+        isLoggedInUser,
       } = response.data.data.user;
 
       const loginUser = new User(
@@ -265,7 +268,8 @@ export const signUp = ({
         lastName,
         authorName,
         isFriend,
-        slug
+        slug,
+        isLoggedInUser
       );
 
       addLocalStorageUserInformation(

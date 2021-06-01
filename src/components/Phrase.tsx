@@ -1,12 +1,13 @@
 // Import libraries
 import React from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faShareSquare } from "@fortawesome/free-regular-svg-icons";
 
 // Import components
-import Card from "../ui/Card/Card";
+import Card from "./ui/Card";
 
 // Styles
 // const PhraseContainer = styled.div`
@@ -41,13 +42,21 @@ const PhraseElement = styled.p`
   }
 `;
 
-const AuthorElement = styled.p`
+const AuthorElement = styled.button`
   width: 100%;
   padding: 1.5rem;
   text-align: right;
+  font-family: inherit;
+  font-size: inherit;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
 
   & span {
     font-style: italic;
+  }
+
+  &:hover {
+    color: ${props => props.theme.colors.pink};
   }
 `;
 
@@ -109,6 +118,7 @@ const ShareElement = styled.button<ISharedElement>`
 
 // Interface
 interface IProps extends ILikeElement, ISharedElement {
+  id: string;
   phrase: string;
   authorName: string;
   isOwnPhrase: boolean;
@@ -120,6 +130,7 @@ interface IProps extends ILikeElement, ISharedElement {
 
 // Component
 const Phrase: React.FC<IProps> = ({
+  id,
   phrase,
   authorName,
   isLiked,
@@ -131,9 +142,14 @@ const Phrase: React.FC<IProps> = ({
   return (
     <Card>
       <PhraseElement>{phrase}</PhraseElement>
-      <AuthorElement>
-        By: <span>{authorName}</span>
-      </AuthorElement>
+      <Link
+        to={{
+          pathname: `user/${id}`,
+        }}>
+        <AuthorElement>
+          By: <span>{authorName}</span>
+        </AuthorElement>
+      </Link>
       <ActionsElement>
         <LikeElement onClick={onLikeHandler} isLiked={isLiked}>
           <span>

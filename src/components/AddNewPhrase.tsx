@@ -4,8 +4,8 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 // Import components
-import H2 from "../ui/Typography/H2";
-import Button from "../ui/Button/Button";
+import H2 from "./ui/Typography/H2";
+import Button from "./ui/Button";
 
 const MAX_LENGTH = 220;
 

@@ -4,10 +4,10 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 
 // Import components
-import Logo from "../ui/Logo/Logo";
-import SearchBar from "../SearchBar/SearchBar";
+import Logo from "../ui/Logo";
+import SearchBar from "../SearchBar";
 import NavBar from "./NavBar/NavBar";
-import UserPin from "./UserPin/UserPin";
+import UserPin from "./UserPin";
 
 // Styles
 const HeaderWrapper = styled.header`

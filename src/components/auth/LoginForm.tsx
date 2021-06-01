@@ -6,14 +6,14 @@ import PropTypes from "prop-types";
 // import { Dispatch } from "redux";
 
 // Import components
-import Input from "../../ui/Form/Input";
-import H2 from "../../ui/Typography/H2";
-import Button from "../../ui/Button/Button";
-import Spinner from "../../ui/Spinner/Spinner";
+import Input from "../ui/Form/Input";
+import H2 from "../ui/Typography/H2";
+import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 
-import { useForm } from "../../../hooks/form-hook";
-import { isEmail, isLength } from "../../../utils/validators";
-import { login } from "../../../store/actions/authAction";
+import { useForm } from "../../hooks/form-hook";
+import { isEmail, isLength } from "../../utils/validators";
+import { login } from "../../store/actions/authAction";
 
 // Styles
 const Form = styled.form`

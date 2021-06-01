@@ -3,16 +3,16 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { useForm } from "../../../hooks/form-hook";
-import { isEmail, isLength } from "../../../utils/validators";
+import { useForm } from "../../hooks/form-hook";
+import { isEmail, isLength } from "../../utils/validators";
 
 // Import components
-import Input from "../../ui/Form/Input";
-import H2 from "../../ui/Typography/H2";
-import Button from "../../ui/Button/Button";
-import Spinner from "../../ui/Spinner/Spinner";
+import Input from "../ui/Form/Input";
+import H2 from "../ui/Typography/H2";
+import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 
-import User from "../../../models/User";
+import User from "../../models/User";
 
 // Styles
 const Form = styled.form`

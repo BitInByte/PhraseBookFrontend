@@ -4,7 +4,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 // Import components
-import H3 from "../ui/Typography/H3";
+import H3 from "./ui/Typography/H3";
 
 // Styles
 const FooterWrapper = styled.div`

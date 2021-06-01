@@ -1,18 +1,19 @@
 // Import libraries
 import React, { useState, useEffect, useRef, RefObject } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import { userType } from "../../models/User";
+import User, { userType } from "../models/User";
 
 // Import components
-import BackDrop from "../ui/BackDrop/BackDrop";
-import Search from "../../models/Search";
-import Spinner from "../ui/Spinner/Spinner";
-import MessageModal from "../ui/MessageModal/MessageModal";
+import BackDrop from "./ui/BackDrop";
+import Search from "./../models/Search";
+import Spinner from "./ui/Spinner";
+import MessageModal from "./ui/MessageModal";
 
 // Styles
 const FormWrapper = styled.div`
@@ -93,6 +94,11 @@ const Input = styled.input`
 const SearchInputDiv = styled.div`
   width: 100%;
   padding: 2rem;
+  transition: all 0.2s ease-in;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.yellow};
+  }
 `;
 
 // interface SRIProps {
@@ -135,7 +141,7 @@ interface IProps {}
 const SearchBar: React.FC<IProps> = () => {
   const [searchInput, setSearchInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<userType[] | undefined>();
+  const [searchResults, setSearchResults] = useState<Search[] | undefined>();
   const [error, setError] = useState<string | undefined>();
 
   const token = useSelector((state: IStore) => state.auth.token);
@@ -181,7 +187,17 @@ const SearchBar: React.FC<IProps> = () => {
         try {
           const response = await Search.getSearch(token, searchInput);
           console.log("Search response: ", response);
-          setSearchResults(response.data.data.users);
+          // setSearchResults(response.data.data.users);
+          setSearchResults(
+            response.data.data.users.map(user => {
+              return new Search(
+                user._id,
+                user.slug,
+                user.firstName,
+                user.lastName
+              );
+            })
+          );
         } catch (error) {
           setError(error.message);
         }
@@ -206,15 +222,26 @@ const SearchBar: React.FC<IProps> = () => {
     setSearchInput("");
   };
 
+  const onSearchResultClickHandler = () => {
+    setSearchInput("");
+  };
+
   let searchResultElement;
   if (isLoading) {
     searchResultElement = <Spinner />;
   } else if (searchResults && searchResults.length > 0) {
     searchResultElement = searchResults.map(result => (
-      <SearchInputDiv>
-        <p>{result.firstName}</p>
-        <p>{result.slug}</p>
-      </SearchInputDiv>
+      <Link
+        key={result.getId()}
+        to={{
+          pathname: `/user/${result.getId()}`,
+        }}
+        onClick={onSearchResultClickHandler}>
+        <SearchInputDiv>
+          <p>{result.getAuthorName()}</p>
+          <p>@{result.getSlug()}</p>
+        </SearchInputDiv>
+      </Link>
     ));
   }
 

@@ -8,8 +8,8 @@ import { isAuthRoutes, isNotAuthRoutes } from "./router/router";
 import { checkSession } from "./store/actions/authAction";
 
 import useRouters from "./hooks/router-hook";
-import Layout from "./hoc/Layout/Layout";
-import Spinner from "./components/ui/Spinner/Spinner";
+import Layout from "./hoc/Layout";
+import Spinner from "./components/ui/Spinner";
 // const isAuth = false;
 
 const App = () => {

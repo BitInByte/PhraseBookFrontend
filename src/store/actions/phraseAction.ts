@@ -6,6 +6,9 @@ import Phrase, {
   // paginationState,
 } from "../../models/Phrase";
 
+import { userSuccess } from "./userAction";
+import User from "../../models/User";
+
 import {
   phraseStartAction,
   phraseSuccessAction,
@@ -37,6 +40,12 @@ const phraseSuccess = (
   return {
     type: actionTypes.PHRASE_SUCCESS,
     payload: { phrases, pagination },
+  };
+};
+
+export const phraseClear = () => {
+  return {
+    type: actionTypes.PHRASE_CLEAR,
   };
 };
 
@@ -74,6 +83,7 @@ export const phraseErrorClear = () => {
 
 export const getPhrases = (
   // token: string,
+  uid = undefined as undefined | string,
   page = 1,
   isIncrement = false
 ): AppThunk => {
@@ -90,7 +100,7 @@ export const getPhrases = (
 
     try {
       if (token) {
-        const phrases = await Phrase.getPhrases(token, page);
+        const phrases = await Phrase.getPhrases(uid, token, page);
         if (phrases && phrases.data.phrases && phrases.pagination) {
           const phrasesArray = phrases.data.phrases.map(phrase => {
             return new Phrase(
@@ -106,6 +116,17 @@ export const getPhrases = (
               phrase.isPhraseAuthorOnFriendsList
             );
           });
+          const user = new User(
+            phrases.data.user._id,
+            phrases.data.user.email,
+            phrases.data.user.firstName,
+            phrases.data.user.lastName,
+            phrases.data.user.authorName,
+            phrases.data.user.isFriend,
+            phrases.data.user.slug,
+            phrases.data.user.isLoggedInUser
+          );
+          dispatch(userSuccess(user));
           console.log("Im inside phrases action");
           if (!isIncrement) {
             if (phrases.pagination) {

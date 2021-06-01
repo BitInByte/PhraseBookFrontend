@@ -10,8 +10,10 @@
 
 ## In Progress
 
-2. Working on search bar - need to implement a new redux to manipulate async connection to the server to get back the results
 3. Backend is returning 400 with no users on search
+4. Missing add friend button functionality
+5. Missing infinite loading on search bar
+6. Bug on liking phrases and on the add friend button, somehow the state is not getting reactive, maybe getters doesn't work
 
 ## Done
 
@@ -21,3 +23,4 @@
 4. Timeline is not in correct order, should be from the oldest to the newest ones
 5. Add new phrase response to the phrases array in redux
 6. Backend returning duplicates on the timeline getPhrases
+7. Working on search bar - need to implement a new redux to manipulate async connection to the server to get back the results

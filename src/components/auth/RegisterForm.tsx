@@ -4,15 +4,15 @@ import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 
-import { useForm } from "../../../hooks/form-hook";
-import { isEmail, isLength } from "../../../utils/validators";
-import { signUp } from "../../../store/actions/authAction";
+import { useForm } from "../../hooks/form-hook";
+import { isEmail, isLength } from "../../utils/validators";
+import { signUp } from "../../store/actions/authAction";
 
 // Import components
-import Input from "../../ui/Form/Input";
-import H2 from "../../ui/Typography/H2";
-import Button from "../../ui/Button/Button";
-import Spinner from "../../ui/Spinner/Spinner";
+import Input from "../ui/Form/Input";
+import H2 from "../ui/Typography/H2";
+import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 
 // Styles
 const Form = styled.form`

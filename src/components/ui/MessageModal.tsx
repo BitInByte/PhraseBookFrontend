@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { CSSTransition } from "react-transition-group";
 import PropTypes from "prop-types";
-import actionTypes from "../../../store/actions/actionTypes";
+import actionTypes from "../../store/actions/actionTypes";
 import { useDispatch } from "react-redux";
 
 // Import components
